@@ -13,6 +13,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--debug', action='store_true', help='only do one epoch and displays at each iteration')
         self.parser.add_argument('--train_eval_datasets', type=str, default='ceilnet_table2,real20,objects,postcard,wild', help='comma-separated benchmark datasets for periodic training-time evaluation')
         self.parser.add_argument('--train_eval_interval_epochs', type=float, default=0.5, help='periodic full evaluation interval measured in training epochs')
+        self.parser.add_argument('--train_eval_epoch_schedule', type=str, default=None, help='optional epoch schedule such as 5:50,1:70; evaluate every 5 epochs until 50, then every epoch until 70')
         self.parser.add_argument('--no_train_eval', action='store_true', help='disable periodic full evaluation during training')
         self.parser.add_argument('--no_save_best_eval', action='store_true', help='do not save the best checkpoint selected by periodic evaluation')
 

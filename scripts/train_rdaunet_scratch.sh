@@ -29,4 +29,4 @@ fi
   --reflection_color_jitter 0.03 \
   --reflection_alpha_low 0.5 \
   --reflection_alpha_high 1.0 \
-  --train_eval_interval_epochs 1.0
+  --train_eval_epoch_schedule 5:50,1:70

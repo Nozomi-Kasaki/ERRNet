@@ -5,7 +5,12 @@ from data.image_folder import read_fns
 import torch.backends.cudnn as cudnn
 import data.reflect_dataset as datasets
 import util.util as util
-from util.train_eval import PeriodicEvaluator, build_eval_dataloaders, parse_eval_datasets
+from util.train_eval import (
+    PeriodicEvaluator,
+    build_eval_dataloaders,
+    parse_eval_datasets,
+    parse_eval_epoch_schedule,
+)
 import data
 
 opt = TrainOptions().parse()
@@ -57,13 +62,15 @@ engine = Engine(opt)
 eval_names = parse_eval_datasets(opt.train_eval_datasets)
 eval_loaders = build_eval_dataloaders(opt, datadir, eval_names)
 eval_interval_iters = max(1, int(len(train_dataloader_fusion) * opt.train_eval_interval_epochs))
+eval_epoch_schedule = parse_eval_epoch_schedule(opt.train_eval_epoch_schedule)
 periodic_evaluator = PeriodicEvaluator(
     engine,
     eval_loaders,
     eval_interval_iters,
     enabled=not opt.no_train_eval,
     save_best=not opt.no_save_best_eval,
-    best_label='best_eval')
+    best_label='best_eval',
+    epoch_schedule=eval_epoch_schedule)
 
 """Main Loop"""
 def set_learning_rate(lr):
@@ -87,4 +94,7 @@ while engine.epoch < target_epoch:
         set_learning_rate(opt.lr * 0.1)
         
     engine.train(train_dataloader_fusion, on_iter_end=periodic_evaluator.on_iter_end)
-    periodic_evaluator.maybe_eval(force=False, tag='epoch_{}_end'.format(engine.epoch))
+    if eval_epoch_schedule is not None:
+        periodic_evaluator.maybe_eval_epoch(engine.epoch)
+    else:
+        periodic_evaluator.maybe_eval(force=False, tag='epoch_{}_end'.format(engine.epoch))

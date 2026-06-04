@@ -49,6 +49,26 @@ def parse_eval_datasets(value):
     return names
 
 
+def parse_eval_epoch_schedule(value):
+    if value is None or not str(value).strip():
+        return None
+    schedule = []
+    for item in str(value).split(','):
+        item = item.strip()
+        if not item:
+            continue
+        if ':' not in item:
+            raise ValueError('Expected eval schedule item as interval:end_epoch, got {}'.format(item))
+        interval, end_epoch = item.split(':', 1)
+        interval = int(interval)
+        end_epoch = int(end_epoch)
+        if interval <= 0 or end_epoch <= 0:
+            raise ValueError('Eval schedule values must be positive: {}'.format(item))
+        schedule.append((end_epoch, interval))
+    schedule.sort(key=lambda pair: pair[0])
+    return schedule
+
+
 def build_eval_dataloaders(opt, data_root, dataset_names):
     eval_loaders = []
     for name in dataset_names:
@@ -128,15 +148,17 @@ def format_delta(metrics, baseline):
 class PeriodicEvaluator(object):
     def __init__(
             self, engine, eval_loaders, interval_iters, enabled=True,
-            save_best=True, best_label='best_eval'):
+            save_best=True, best_label='best_eval', epoch_schedule=None):
         self.engine = engine
         self.eval_loaders = eval_loaders
         self.interval_iters = max(1, int(interval_iters))
         self.enabled = enabled and len(eval_loaders) > 0
         self.save_best = save_best
         self.best_label = best_label
+        self.epoch_schedule = epoch_schedule
         self.best_score = None
         self.last_eval_iter = None
+        self.last_eval_epoch = None
 
     def maybe_eval(self, force=False, tag=None):
         if not self.enabled:
@@ -181,4 +203,23 @@ class PeriodicEvaluator(object):
         return results
 
     def on_iter_end(self, engine, batch_index, total_batches):
+        if self.epoch_schedule is not None:
+            return
         self.maybe_eval(force=False)
+
+    def should_eval_epoch(self, epoch):
+        if not self.enabled or self.epoch_schedule is None:
+            return False
+        if self.last_eval_epoch == epoch:
+            return False
+        for end_epoch, interval in self.epoch_schedule:
+            if epoch <= end_epoch:
+                return epoch % interval == 0
+        end_epoch, interval = self.epoch_schedule[-1]
+        return epoch % interval == 0
+
+    def maybe_eval_epoch(self, epoch):
+        if self.should_eval_epoch(epoch):
+            self.last_eval_epoch = epoch
+            return self.maybe_eval(force=True, tag='epoch_{}_end'.format(epoch))
+        return None
