@@ -20,6 +20,16 @@ def compute_gradient(img):
     return gradx,grady
 
 
+class CharbonnierLoss(nn.Module):
+    def __init__(self, eps=1e-3):
+        super(CharbonnierLoss, self).__init__()
+        self.eps = eps
+
+    def forward(self, predict, target):
+        diff = predict - target
+        return torch.mean(torch.sqrt(diff * diff + self.eps * self.eps))
+
+
 class GradientLoss(nn.Module):
     def __init__(self):
         super(GradientLoss, self).__init__()
@@ -30,6 +40,58 @@ class GradientLoss(nn.Module):
         target_gradx, target_grady = compute_gradient(target) 
         
         return self.loss(predict_gradx, target_gradx) + self.loss(predict_grady, target_grady)
+
+
+class LaplacianLoss(nn.Module):
+    def __init__(self):
+        super(LaplacianLoss, self).__init__()
+        self.loss = nn.L1Loss()
+
+    def _laplacian(self, img):
+        channels = img.size(1)
+        kernel = torch.tensor(
+            [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
+            dtype=img.dtype, device=img.device).view(1, 1, 3, 3)
+        kernel = kernel.repeat(channels, 1, 1, 1)
+        img = F.pad(img, (1, 1, 1, 1), mode='reflect')
+        return F.conv2d(img, kernel, groups=channels)
+
+    def forward(self, predict, target):
+        return self.loss(self._laplacian(predict), self._laplacian(target))
+
+
+class SSIMLoss(nn.Module):
+    def __init__(self, window_size=11, data_range=1.0, eps=1e-6):
+        super(SSIMLoss, self).__init__()
+        self.window_size = window_size
+        self.data_range = data_range
+        self.eps = eps
+        self.c1 = (0.01 * data_range) ** 2
+        self.c2 = (0.03 * data_range) ** 2
+
+    def _mean_filter(self, x):
+        pad = self.window_size // 2
+        x = F.pad(x, (pad, pad, pad, pad), mode='reflect')
+        return F.avg_pool2d(x, self.window_size, stride=1)
+
+    def forward(self, predict, target):
+        predict = torch.clamp(predict, 0, self.data_range)
+        target = torch.clamp(target, 0, self.data_range)
+
+        mu_x = self._mean_filter(predict)
+        mu_y = self._mean_filter(target)
+        mu_x_sq = mu_x.pow(2)
+        mu_y_sq = mu_y.pow(2)
+        mu_xy = mu_x * mu_y
+
+        sigma_x = self._mean_filter(predict * predict) - mu_x_sq
+        sigma_y = self._mean_filter(target * target) - mu_y_sq
+        sigma_xy = self._mean_filter(predict * target) - mu_xy
+
+        numerator = (2 * mu_xy + self.c1) * (2 * sigma_xy + self.c2)
+        denominator = (mu_x_sq + mu_y_sq + self.c1) * (sigma_x + sigma_y + self.c2)
+        ssim = numerator / (denominator + self.eps)
+        return 1 - torch.clamp(ssim, 0, 1).mean()
 
 
 class MultipleLoss(nn.Module):
@@ -255,7 +317,28 @@ def init_loss(opt, tensor):
     loss_dic = {}
 
     pixel_loss = ContentLoss()
-    pixel_loss.initialize(MultipleLoss([nn.MSELoss(), GradientLoss()], [0.2,0.4]))
+    if getattr(opt, 'loss_profile', 'legacy') == 'legacy':
+        pixel_loss.initialize(MultipleLoss([nn.MSELoss(), GradientLoss()], [0.2, 0.4]))
+    else:
+        loss_terms = []
+        loss_weights = []
+
+        def add_loss(weight, loss):
+            if weight > 0:
+                loss_terms.append(loss)
+                loss_weights.append(weight)
+
+        add_loss(getattr(opt, 'lambda_charbonnier', 1.0), CharbonnierLoss())
+        add_loss(getattr(opt, 'lambda_mse', 0.2), nn.MSELoss())
+        add_loss(getattr(opt, 'lambda_gradient', 0.4), GradientLoss())
+        add_loss(getattr(opt, 'lambda_laplacian', 0.1), LaplacianLoss())
+        add_loss(getattr(opt, 'lambda_ssim', 0.2), SSIMLoss())
+
+        if not loss_terms:
+            loss_terms = [nn.MSELoss()]
+            loss_weights = [1.0]
+
+        pixel_loss.initialize(MultipleLoss(loss_terms, loss_weights))
 
     loss_dic['t_pixel'] = pixel_loss
     loss_dic['r_pixel'] = pixel_loss

@@ -13,6 +13,7 @@ import cv2
 import numbers
 import types
 import collections
+from collections.abc import Sequence
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 import util.util as util
@@ -97,7 +98,7 @@ def gaussian_blur(img, kernel_size, sigma):
     # new = gaussian_filter(img, sigma=sigma, truncate=truncate)
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size, kernel_size)
-    elif isinstance(kernel_size, collections.Sequence):
+    elif isinstance(kernel_size, Sequence):
         assert len(kernel_size) == 2        
     new = cv2.GaussianBlur(img, kernel_size, sigma)  # apply gaussian filter band by band    
     return Image.fromarray(new)
@@ -117,15 +118,70 @@ class ReflectionSythesis_1(object):
     """Reflection image data synthesis for weakly-supervised learning 
     of ICCV 2017 paper *"A Generic Deep Architecture for Single Image Reflection Removal and Image Smoothing"*    
     """
-    def __init__(self, kernel_sizes=None, low_sigma=2, high_sigma=5, low_gamma=1.3, high_gamma=1.3):
+    def __init__(
+            self, kernel_sizes=None, low_sigma=2, high_sigma=5,
+            low_gamma=1.3, high_gamma=1.3, enhanced=False,
+            reflection_alpha=(1.0, 1.0), transmission_alpha=(1.0, 1.0),
+            color_jitter=0.0, shift=0, noise_std=0.0, jpeg_prob=0.0,
+            jpeg_quality=(70, 95)):
         self.kernel_sizes = kernel_sizes or [11]
         self.low_sigma = low_sigma
         self.high_sigma = high_sigma
         self.low_gamma = low_gamma
         self.high_gamma = high_gamma
+        self.enhanced = enhanced
+        self.reflection_alpha = reflection_alpha
+        self.transmission_alpha = transmission_alpha
+        self.color_jitter = color_jitter
+        self.shift = shift
+        self.noise_std = noise_std
+        self.jpeg_prob = jpeg_prob
+        self.jpeg_quality = jpeg_quality
         print('[i] reflection sythesis model: {}'.format({
             'kernel_sizes': kernel_sizes, 'low_sigma': low_sigma, 'high_sigma': high_sigma,
-            'low_gamma': low_gamma, 'high_gamma': high_gamma}))
+            'low_gamma': low_gamma, 'high_gamma': high_gamma, 'enhanced': enhanced,
+            'reflection_alpha': reflection_alpha, 'transmission_alpha': transmission_alpha,
+            'color_jitter': color_jitter, 'shift': shift, 'noise_std': noise_std,
+            'jpeg_prob': jpeg_prob, 'jpeg_quality': jpeg_quality}))
+
+    @staticmethod
+    def _uniform_range(value):
+        if isinstance(value, (list, tuple)):
+            low, high = value
+        else:
+            low = high = value
+        return float(np.random.uniform(low, high))
+
+    @staticmethod
+    def _jpeg_compress_float(img, quality):
+        img_uint8 = np.clip(img * 255.0, 0, 255).astype(np.uint8)
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), int(quality)]
+        ok, enc = cv2.imencode('.jpg', cv2.cvtColor(img_uint8, cv2.COLOR_RGB2BGR), encode_param)
+        if not ok:
+            return img
+        dec = cv2.imdecode(enc, cv2.IMREAD_COLOR)
+        dec = cv2.cvtColor(dec, cv2.COLOR_BGR2RGB)
+        return dec.astype(np.float32) / 255.0
+
+    def _augment_reflection_layer(self, R):
+        if not self.enhanced:
+            return R
+
+        h, w = R.shape[:2]
+
+        if self.shift > 0:
+            dx = np.random.randint(-self.shift, self.shift + 1)
+            dy = np.random.randint(-self.shift, self.shift + 1)
+            matrix = np.float32([[1, 0, dx], [0, 1, dy]])
+            R = cv2.warpAffine(R, matrix, (w, h), flags=cv2.INTER_LINEAR,
+                               borderMode=cv2.BORDER_REFLECT_101)
+
+        if self.color_jitter > 0:
+            color_scale = np.random.uniform(
+                1.0 - self.color_jitter, 1.0 + self.color_jitter, size=(1, 1, 3))
+            R = np.clip(R * color_scale, 0, 1)
+
+        return R.astype(np.float32)
 
     def __call__(self, B, R):
         if not _is_pil_image(B):
@@ -135,26 +191,42 @@ class ReflectionSythesis_1(object):
         
         B_ = np.asarray(B, np.float32) / 255.
         R_ = np.asarray(R, np.float32) / 255.
+        R_ = self._augment_reflection_layer(R_)
 
-        kernel_size = np.random.choice(self.kernel_sizes)
+        kernel_size = int(np.random.choice(self.kernel_sizes))
+        if kernel_size % 2 == 0:
+            kernel_size += 1
         sigma = np.random.uniform(self.low_sigma, self.high_sigma)
         gamma = np.random.uniform(self.low_gamma, self.high_gamma)
-        R_blur = R_
-        kernel = cv2.getGaussianKernel(11, sigma)
+        reflection_alpha = self._uniform_range(self.reflection_alpha)
+        transmission_alpha = self._uniform_range(self.transmission_alpha)
+
+        R_blur = R_.copy()
+        kernel = cv2.getGaussianKernel(kernel_size, sigma)
         kernel2d = np.dot(kernel, kernel.T)
 
         for i in range(3):
             R_blur[...,i] = convolve2d(R_blur[...,i], kernel2d, mode='same')
 
-        M_ = B_ + R_blur
+        R_blur = np.clip(R_blur * reflection_alpha, 0, 1)
+        B_mixed = np.clip(B_ * transmission_alpha, 0, 1)
+        M_ = B_mixed + R_blur
         
         if np.max(M_) > 1:
             m = M_[M_ > 1]
             m = (np.mean(m) - 1) * gamma
             R_blur = np.clip(R_blur - m, 0, 1)
-            M_ = np.clip(R_blur + B_, 0, 1)
+            M_ = np.clip(R_blur + B_mixed, 0, 1)
+
+        if self.enhanced and self.noise_std > 0:
+            M_ = M_ + np.random.normal(0, self.noise_std, M_.shape).astype(np.float32)
+            M_ = np.clip(M_, 0, 1)
+
+        if self.enhanced and self.jpeg_prob > 0 and np.random.random() < self.jpeg_prob:
+            quality = np.random.randint(self.jpeg_quality[0], self.jpeg_quality[1] + 1)
+            M_ = self._jpeg_compress_float(M_, quality)
         
-        return B_, R_blur, M_
+        return B_.astype(np.float32), R_blur.astype(np.float32), M_.astype(np.float32)
 
 
 class Sobel(object):

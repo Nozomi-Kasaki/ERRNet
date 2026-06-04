@@ -32,7 +32,7 @@ class Engine(object):
             self.writer = util.get_summary_writer(os.path.join(self.basedir, 'logs'))
             self.visualizer = Visualizer(opt)
 
-    def train(self, train_loader, **kwargs):
+    def train(self, train_loader, on_iter_end=None, **kwargs):
         print('\nEpoch: %d' % self.epoch)
         avg_meters = util.AverageMeters()
         opt = self.opt
@@ -63,6 +63,9 @@ class Engine(object):
                     t = (time.time() - iter_start_time)          
 
             self.iterations += 1
+
+            if on_iter_end is not None:
+                on_iter_end(self, i + 1, len(train_loader))
     
         self.epoch += 1
 

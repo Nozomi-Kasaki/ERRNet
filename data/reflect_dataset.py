@@ -14,6 +14,14 @@ import util.util as util
 import data.torchdata as torchdata
 
 
+def _parse_int_list(value):
+    if value is None:
+        return None
+    if isinstance(value, (list, tuple)):
+        return [int(v) for v in value]
+    return [int(v.strip()) for v in str(value).split(',') if v.strip()]
+
+
 def _resize_long_edge(img, max_long_edge, round_factor=1):
     if max_long_edge is None:
         return img
@@ -110,7 +118,14 @@ class DataLoader(torch.utils.data.DataLoader):
 
 
 class CEILDataset(BaseDataset):
-    def __init__(self, datadir, fns=None, size=None, enable_transforms=True, low_sigma=2, high_sigma=5, low_gamma=1.3, high_gamma=1.3):
+    def __init__(
+            self, datadir, fns=None, size=None, enable_transforms=True,
+            low_sigma=2, high_sigma=5, low_gamma=1.3, high_gamma=1.3,
+            kernel_sizes=None, enhanced_synthesis=False,
+            reflection_alpha=(1.0, 1.0), transmission_alpha=(1.0, 1.0),
+            reflection_color_jitter=0.0, reflection_shift=0,
+            reflection_noise_std=0.0, reflection_jpeg_prob=0.0,
+            reflection_jpeg_quality=(70, 95)):
         super(CEILDataset, self).__init__()
         self.size = size
         self.datadir = datadir
@@ -121,7 +136,20 @@ class CEILDataset(BaseDataset):
         if size is not None:
             self.paths = self.paths[:size]
 
-        self.syn_model = ReflectionSythesis_1(kernel_sizes=[11], low_sigma=low_sigma, high_sigma=high_sigma, low_gamma=low_gamma, high_gamma=high_gamma)
+        self.syn_model = ReflectionSythesis_1(
+            kernel_sizes=_parse_int_list(kernel_sizes) or [11],
+            low_sigma=low_sigma,
+            high_sigma=high_sigma,
+            low_gamma=low_gamma,
+            high_gamma=high_gamma,
+            enhanced=enhanced_synthesis,
+            reflection_alpha=reflection_alpha,
+            transmission_alpha=transmission_alpha,
+            color_jitter=reflection_color_jitter,
+            shift=reflection_shift,
+            noise_std=reflection_noise_std,
+            jpeg_prob=reflection_jpeg_prob,
+            jpeg_quality=reflection_jpeg_quality)
         self.reset(shuffle=False)
 
     def reset(self, shuffle=True):

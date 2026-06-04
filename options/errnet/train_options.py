@@ -11,6 +11,10 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--no_html', action='store_true', help='do not save intermediate training results to [opt.checkpoints_dir]/[opt.name]/web/')
         self.parser.add_argument('--save_epoch_freq', type=int, default=10, help='frequency of saving checkpoints at the end of epochs')
         self.parser.add_argument('--debug', action='store_true', help='only do one epoch and displays at each iteration')
+        self.parser.add_argument('--train_eval_datasets', type=str, default='ceilnet_table2,real20,objects,postcard,wild', help='comma-separated benchmark datasets for periodic training-time evaluation')
+        self.parser.add_argument('--train_eval_interval_epochs', type=float, default=0.5, help='periodic full evaluation interval measured in training epochs')
+        self.parser.add_argument('--no_train_eval', action='store_true', help='disable periodic full evaluation during training')
+        self.parser.add_argument('--no_save_best_eval', action='store_true', help='do not save the best checkpoint selected by periodic evaluation')
 
         # for training (Note: in train_errnet.py, we mannually tune the training protocol, but you can also use following setting by modifying the code in errnet_model.py)
         self.parser.add_argument('--nEpochs', '-n', type=int, default=60, help='# of epochs to run')
@@ -21,6 +25,18 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--high_sigma', type=float, default=5, help='max sigma in synthetic dataset')
         self.parser.add_argument('--low_gamma', type=float, default=1.3, help='max gamma in synthetic dataset')
         self.parser.add_argument('--high_gamma', type=float, default=1.3, help='max gamma in synthetic dataset')
+        self.parser.add_argument('--syn_kernel_sizes', type=str, default='7,9,11,15,21', help='comma-separated Gaussian kernel sizes for synthetic reflection blur')
+        self.parser.add_argument('--no_reflection_aug', action='store_true', help='disable enhanced reflection synthesis augmentation')
+        self.parser.add_argument('--reflection_alpha_low', type=float, default=0.35, help='min synthetic reflection intensity multiplier')
+        self.parser.add_argument('--reflection_alpha_high', type=float, default=1.0, help='max synthetic reflection intensity multiplier')
+        self.parser.add_argument('--transmission_alpha_low', type=float, default=0.92, help='min transmission attenuation in synthetic mixtures')
+        self.parser.add_argument('--transmission_alpha_high', type=float, default=1.0, help='max transmission attenuation in synthetic mixtures')
+        self.parser.add_argument('--reflection_color_jitter', type=float, default=0.08, help='per-channel reflection color jitter range')
+        self.parser.add_argument('--reflection_shift', type=int, default=6, help='max pixel shift for reflection layer before synthesis')
+        self.parser.add_argument('--reflection_noise_std', type=float, default=0.01, help='Gaussian noise std added to synthetic mixtures')
+        self.parser.add_argument('--reflection_jpeg_prob', type=float, default=0.20, help='probability of JPEG compression on synthetic mixtures')
+        self.parser.add_argument('--reflection_jpeg_quality_low', type=int, default=55, help='min JPEG quality for synthetic mixtures')
+        self.parser.add_argument('--reflection_jpeg_quality_high', type=int, default=95, help='max JPEG quality for synthetic mixtures')
         
         # data augmentation
         self.parser.add_argument('--batchSize', '-b', type=int, default=1, help='input batch size')
@@ -36,6 +52,12 @@ class TrainOptions(BaseOptions):
         # loss weight
         self.parser.add_argument('--unaligned_loss', type=str, default='vgg', help='learning rate policy: vgg|mse|ctx|ctx_vgg')
         self.parser.add_argument('--vgg_layer', type=int, default=31, help='vgg layer of unaligned loss')
+        self.parser.add_argument('--loss_profile', type=str, default='structure', choices=['legacy', 'structure'], help='aligned-data reconstruction loss profile')
+        self.parser.add_argument('--lambda_mse', type=float, default=0.2, help='weight for MSE reconstruction loss')
+        self.parser.add_argument('--lambda_charbonnier', type=float, default=1.0, help='weight for robust Charbonnier reconstruction loss')
+        self.parser.add_argument('--lambda_gradient', type=float, default=0.4, help='weight for first-order gradient loss')
+        self.parser.add_argument('--lambda_laplacian', type=float, default=0.1, help='weight for Laplacian edge loss')
+        self.parser.add_argument('--lambda_ssim', type=float, default=0.2, help='weight for differentiable SSIM loss')
         
         self.parser.add_argument('--lambda_gan', type=float, default=0.01, help='weight for gan loss')
         self.parser.add_argument('--lambda_vgg', type=float, default=0.1, help='weight for vgg loss')
