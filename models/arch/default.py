@@ -349,8 +349,18 @@ class ERRNetGatedAdapter(nn.Module):
         self.last_correction = None
         self.last_mask = None
 
+    def _match_input_size(self, tensor, input_size):
+        h, w = input_size
+        th, tw = tensor.shape[-2:]
+        if (th, tw) == (h, w):
+            return tensor
+        if th >= h and tw >= w:
+            return tensor[..., :h, :w]
+        return F.interpolate(tensor, size=(h, w), mode='bilinear', align_corners=False)
+
     def forward(self, x):
         base_output = self.backbone(x)
+        base_output = self._match_input_size(base_output, x.shape[-2:])
         output, correction, mask = self.refiner(x[:, :3], base_output)
         self.last_backbone = base_output
         self.last_correction = correction

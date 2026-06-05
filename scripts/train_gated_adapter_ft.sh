@@ -40,4 +40,4 @@ fi
   --reflection_alpha_high 1.0 \
   --transmission_alpha_low 0.95 \
   --transmission_alpha_high 1.0 \
-  --train_eval_epoch_schedule 5:50,1:70
+  --train_eval_epoch_schedule 1:70
