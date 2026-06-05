@@ -192,6 +192,7 @@ class ERRNetModel(ERRNetBase):
         self.epoch = 0
         self.iterations = 0
         self.device = torch.device("cpu")
+        self._adapter_backbone_frozen = None
 
     def print_network(self):
         print('--------------------- Model ---------------------')
@@ -206,6 +207,30 @@ class ERRNetModel(ERRNetBase):
 
     def _train(self):
         self.net_i.train()
+        self._configure_adapter_phase()
+
+    def _configure_adapter_phase(self):
+        if not self.isTrain or not hasattr(self.net_i, 'set_backbone_trainable'):
+            return
+        freeze_epochs = getattr(self.opt, 'adapter_freeze_backbone_epochs', 0)
+        freeze_backbone = self.epoch < freeze_epochs
+        if self._adapter_backbone_frozen != freeze_backbone:
+            state = 'frozen' if freeze_backbone else 'trainable'
+            print('[i] adapter backbone is now {}'.format(state))
+        self.net_i.set_backbone_trainable(not freeze_backbone)
+        self._adapter_backbone_frozen = freeze_backbone
+
+    def set_learning_rate(self, lr):
+        for optimizer in self.optimizers:
+            for group in optimizer.param_groups:
+                scale = group.get('lr_scale', 1.0)
+                group['lr'] = lr * scale
+                group['initial_lr'] = lr * scale
+            names = [
+                '{}={:.6g}'.format(group.get('name', 'group{}'.format(i)), group['lr'])
+                for i, group in enumerate(optimizer.param_groups)
+            ]
+            print('[i] set learning rate to {} ({})'.format(lr, ', '.join(names)))
 
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
@@ -251,7 +276,15 @@ class ERRNetModel(ERRNetBase):
             self._init_optimizer([self.optimizer_D])
 
             # initialize optimizers
-            self.optimizer_G = torch.optim.Adam(self.net_i.parameters(), 
+            if hasattr(self.net_i, 'optimizer_param_groups'):
+                net_i_params = self.net_i.optimizer_param_groups(
+                    opt.lr,
+                    backbone_lr_scale=opt.adapter_backbone_lr_scale,
+                    adapter_lr_scale=opt.adapter_lr_scale)
+            else:
+                net_i_params = self.net_i.parameters()
+
+            self.optimizer_G = torch.optim.Adam(net_i_params,
                 lr=opt.lr, betas=(0.9, 0.999), weight_decay=opt.wd)
 
             self._init_optimizer([self.optimizer_G])
@@ -281,6 +314,8 @@ class ERRNetModel(ERRNetBase):
         self.loss_icnn_pixel = None
         self.loss_icnn_vgg = None
         self.loss_G_GAN = None
+        self.loss_adapter_consistency = None
+        self.loss_adapter_sparsity = None
 
         if self.opt.lambda_gan > 0:
             self.loss_G_GAN = self.loss_dic['gan'].get_g_loss(
@@ -295,6 +330,15 @@ class ERRNetModel(ERRNetBase):
                 self.output_i, self.target_t)
 
             self.loss_G += self.loss_icnn_pixel+self.loss_icnn_vgg*self.opt.lambda_vgg
+
+            backbone_output = getattr(self.net_i, 'last_backbone', None)
+            correction = getattr(self.net_i, 'last_correction', None)
+            if backbone_output is not None and self.opt.lambda_adapter_consistency > 0:
+                self.loss_adapter_consistency = F.mse_loss(self.output_i, backbone_output.detach())
+                self.loss_G += self.loss_adapter_consistency * self.opt.lambda_adapter_consistency
+            if correction is not None and self.opt.lambda_adapter_sparsity > 0:
+                self.loss_adapter_sparsity = torch.mean(torch.abs(correction))
+                self.loss_G += self.loss_adapter_sparsity * self.opt.lambda_adapter_sparsity
         else:
             self.loss_CX = self.loss_dic['t_cx'].get_loss(self.output_i, self.target_t)
             
@@ -346,6 +390,10 @@ class ERRNetModel(ERRNetBase):
 
         if self.loss_CX is not None:
             ret_errors['CX'] = self.loss_CX.item()
+        if self.loss_adapter_consistency is not None:
+            ret_errors['ACons'] = self.loss_adapter_consistency.item()
+        if self.loss_adapter_sparsity is not None:
+            ret_errors['ASparse'] = self.loss_adapter_sparsity.item()
 
         return ret_errors
 
@@ -376,6 +424,10 @@ class ERRNetModel(ERRNetBase):
             model.net_i.load_state_dict(state_dict['icnn'])
             model.epoch = state_dict['epoch']
             model.iterations = state_dict['iterations']
+            if getattr(model.opt, 'reset_epoch_on_load', False):
+                print('[i] reset epoch/iteration counters after loading initialization checkpoint')
+                model.epoch = 0
+                model.iterations = 0
             # if model.isTrain:
             #     model.optimizer_G.load_state_dict(state_dict['opt_g'])
 

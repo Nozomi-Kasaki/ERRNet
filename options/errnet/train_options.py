@@ -16,6 +16,7 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--train_eval_epoch_schedule', type=str, default=None, help='optional epoch schedule such as 5:50,1:70; evaluate every 5 epochs until 50, then every epoch until 70')
         self.parser.add_argument('--no_train_eval', action='store_true', help='disable periodic full evaluation during training')
         self.parser.add_argument('--no_save_best_eval', action='store_true', help='do not save the best checkpoint selected by periodic evaluation')
+        self.parser.add_argument('--reset_epoch_on_load', action='store_true', help='treat --icnn_path as initialization and restart epoch/iteration counters from zero')
 
         # for training (Note: in train_errnet.py, we mannually tune the training protocol, but you can also use following setting by modifying the code in errnet_model.py)
         self.parser.add_argument('--nEpochs', '-n', type=int, default=60, help='# of epochs to run')
@@ -59,6 +60,11 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--lambda_gradient', type=float, default=0.4, help='weight for first-order gradient loss')
         self.parser.add_argument('--lambda_laplacian', type=float, default=0.1, help='weight for Laplacian edge loss')
         self.parser.add_argument('--lambda_ssim', type=float, default=0.2, help='weight for differentiable SSIM loss')
+        self.parser.add_argument('--lambda_adapter_consistency', type=float, default=0.0, help='weight for keeping adapter output close to the ERRNet backbone output')
+        self.parser.add_argument('--lambda_adapter_sparsity', type=float, default=0.0, help='weight for sparse gated correction magnitude in adapter models')
+        self.parser.add_argument('--adapter_freeze_backbone_epochs', type=int, default=0, help='number of initial epochs that train only the adapter head')
+        self.parser.add_argument('--adapter_backbone_lr_scale', type=float, default=1.0, help='learning-rate multiplier for adapter backbone parameter group')
+        self.parser.add_argument('--adapter_lr_scale', type=float, default=1.0, help='learning-rate multiplier for adapter head parameter group')
         
         self.parser.add_argument('--lambda_gan', type=float, default=0.01, help='weight for gan loss')
         self.parser.add_argument('--lambda_vgg', type=float, default=0.1, help='weight for vgg loss')

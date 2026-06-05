@@ -74,7 +74,11 @@ periodic_evaluator = PeriodicEvaluator(
 
 """Main Loop"""
 def set_learning_rate(lr):
+    if hasattr(engine.model, 'set_learning_rate'):
+        engine.model.set_learning_rate(lr)
+        return
     for optimizer in engine.model.optimizers:
+        print('[i] set learning rate to {}'.format(lr))
         util.set_opt_param(optimizer, 'lr', lr)
 
 

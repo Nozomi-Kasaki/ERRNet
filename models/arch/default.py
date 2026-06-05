@@ -257,6 +257,133 @@ class ASPPContext(nn.Module):
         return self.fuse(torch.cat(features, dim=1))
 
 
+class SobelEdgeExtractor(nn.Module):
+    def __init__(self):
+        super(SobelEdgeExtractor, self).__init__()
+        sobel_x = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=torch.float32).view(1, 1, 3, 3)
+        sobel_y = torch.tensor([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=torch.float32).view(1, 1, 3, 3)
+        self.register_buffer('sobel_x', sobel_x)
+        self.register_buffer('sobel_y', sobel_y)
+
+    def forward(self, rgb):
+        rgb = torch.clamp(rgb, 0, 1)
+        gray = rgb.mean(dim=1, keepdim=True)
+        gray = F.pad(gray, (1, 1, 1, 1), mode='reflect')
+        gx = F.conv2d(gray, self.sobel_x)
+        gy = F.conv2d(gray, self.sobel_y)
+        edge = torch.sqrt(gx * gx + gy * gy + 1e-6)
+        edge_max = edge.amax(dim=(-2, -1), keepdim=True).clamp_min(1e-6)
+        return edge / edge_max
+
+
+class RefinementResidualBlock(nn.Module):
+    def __init__(self, channels):
+        super(RefinementResidualBlock, self).__init__()
+        self.body = nn.Sequential(
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
+            CBAM(channels, reduction=8)
+        )
+
+    def forward(self, x):
+        return x + self.body(x) * 0.1
+
+
+class ReflectionGatedRefinement(nn.Module):
+    """Small residual adapter that edits a pretrained ERRNet output conservatively."""
+    def __init__(self, channels=48, num_blocks=4, max_delta=0.12, residual_scale=0.08):
+        super(ReflectionGatedRefinement, self).__init__()
+        self.max_delta = max_delta
+        self.adapter_scale = nn.Parameter(torch.tensor(float(residual_scale)))
+        self.edge = SobelEdgeExtractor()
+        self.stem = nn.Sequential(
+            nn.Conv2d(11, channels, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True)
+        )
+        self.body = nn.Sequential(*[RefinementResidualBlock(channels) for _ in range(num_blocks)])
+        self.delta_head = nn.Conv2d(channels, 3, kernel_size=3, padding=1)
+        self.mask_head = nn.Conv2d(channels, 1, kernel_size=3, padding=1)
+        self._init_heads()
+
+    def _init_heads(self):
+        nn.init.normal_(self.delta_head.weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.delta_head.bias, 0.0)
+        nn.init.normal_(self.mask_head.weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.mask_head.bias, -2.0)
+
+    def forward(self, input_rgb, base_output):
+        input_rgb = torch.clamp(input_rgb, 0, 1)
+        base_rgb = torch.clamp(base_output, 0, 1)
+        reflection_hint = input_rgb - base_rgb
+        features = torch.cat([
+            input_rgb,
+            base_rgb,
+            reflection_hint,
+            self.edge(input_rgb),
+            self.edge(base_rgb)
+        ], dim=1)
+        hidden = self.body(self.stem(features))
+        mask = torch.sigmoid(self.mask_head(hidden))
+        delta = torch.tanh(self.delta_head(hidden)) * self.max_delta
+        correction = self.adapter_scale * mask * delta
+        output = torch.clamp(base_output + correction, 0, 1)
+        return output, correction, mask
+
+
+class ERRNetGatedAdapter(nn.Module):
+    """Pretrained ERRNet backbone plus a gated residual refinement adapter.
+
+    Old ERRNet checkpoints can be loaded directly: their weights are mapped into
+    the internal backbone and the adapter remains near identity.
+    """
+    def __init__(self, in_channels, out_channels=3, adapter_channels=48):
+        super(ERRNetGatedAdapter, self).__init__()
+        self.backbone = DRNet(
+            in_channels, out_channels, 256, 13, norm=None, res_scale=0.1,
+            se_reduction=8, bottom_kernel_size=1, pyramid=True)
+        self.refiner = ReflectionGatedRefinement(channels=adapter_channels)
+        self.last_backbone = None
+        self.last_correction = None
+        self.last_mask = None
+
+    def forward(self, x):
+        base_output = self.backbone(x)
+        output, correction, mask = self.refiner(x[:, :3], base_output)
+        self.last_backbone = base_output
+        self.last_correction = correction
+        self.last_mask = mask
+        return output
+
+    def set_backbone_trainable(self, trainable):
+        for parameter in self.backbone.parameters():
+            parameter.requires_grad = trainable
+
+    def optimizer_param_groups(self, base_lr, backbone_lr_scale=1.0, adapter_lr_scale=1.0):
+        return [
+            {
+                'params': list(self.backbone.parameters()),
+                'lr': base_lr * backbone_lr_scale,
+                'lr_scale': backbone_lr_scale,
+                'name': 'backbone',
+            },
+            {
+                'params': list(self.refiner.parameters()),
+                'lr': base_lr * adapter_lr_scale,
+                'lr_scale': adapter_lr_scale,
+                'name': 'adapter',
+            },
+        ]
+
+    def load_state_dict(self, state_dict, strict=True):
+        if state_dict and not any(key.startswith(('backbone.', 'refiner.')) for key in state_dict.keys()):
+            print('[i] loading legacy ERRNet weights into gated-adapter backbone')
+            return self.backbone.load_state_dict(state_dict, strict=strict)
+        return super(ERRNetGatedAdapter, self).load_state_dict(state_dict, strict=strict)
+
+
 class RDAUNet(nn.Module):
     """Residual Dense Attention U-Net with edge guidance.
 

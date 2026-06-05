@@ -1,5 +1,5 @@
 # Add your custom network here
-from .default import DRNet, RDAUNet
+from .default import DRNet, RDAUNet, ERRNetGatedAdapter
 import torch.nn as nn
 
 
@@ -13,3 +13,7 @@ def errnet(in_channels, out_channels, **kwargs):
 
 def rdaunet(in_channels, out_channels, **kwargs):
     return RDAUNet(in_channels, out_channels, base_channels=64, growth_channels=32)
+
+
+def errnet_adapter(in_channels, out_channels, **kwargs):
+    return ERRNetGatedAdapter(in_channels, out_channels, adapter_channels=48)
