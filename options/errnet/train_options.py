@@ -17,6 +17,9 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument('--no_train_eval', action='store_true', help='disable periodic full evaluation during training')
         self.parser.add_argument('--no_save_best_eval', action='store_true', help='do not save the best checkpoint selected by periodic evaluation')
         self.parser.add_argument('--reset_epoch_on_load', action='store_true', help='treat --icnn_path as initialization and restart epoch/iteration counters from zero')
+        self.parser.add_argument('--openrr_train_dir', type=str, default=None, help='optional OpenRR-style paired training directory with blended/transmission_layer subfolders')
+        self.parser.add_argument('--openrr_train_ratio', type=float, default=0.25, help='fraction of training samples drawn from the optional OpenRR dataset')
+        self.parser.add_argument('--train_fusion_ratios', type=str, default='0.7,0.3', help='comma-separated base fusion ratios for the default synthetic and real training sets')
 
         # for training (Note: in train_errnet.py, we mannually tune the training protocol, but you can also use following setting by modifying the code in errnet_model.py)
         self.parser.add_argument('--nEpochs', '-n', type=int, default=60, help='# of epochs to run')

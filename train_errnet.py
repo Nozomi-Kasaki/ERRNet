@@ -1,4 +1,4 @@
-from os.path import join
+from os.path import exists, join
 from options.errnet.train_options import TrainOptions
 from engine import Engine
 from data.image_folder import read_fns
@@ -49,6 +49,30 @@ reflection_synthesis_kwargs = {
     'reflection_jpeg_quality': (opt.reflection_jpeg_quality_low, opt.reflection_jpeg_quality_high),
 }
 
+
+def parse_float_list(value):
+    return [float(v.strip()) for v in str(value).split(',') if v.strip()]
+
+
+def append_optional_openrr(datasets_list, base_ratios):
+    if not opt.openrr_train_dir:
+        return datasets_list, base_ratios
+    if not exists(opt.openrr_train_dir):
+        raise FileNotFoundError('OpenRR training directory does not exist: {}'.format(opt.openrr_train_dir))
+
+    openrr_dataset = datasets.CEILTestDataset(
+        opt.openrr_train_dir,
+        size=opt.max_dataset_size,
+        enable_transforms=True)
+    openrr_ratio = max(0.0, min(1.0, opt.openrr_train_ratio))
+    base_sum = sum(base_ratios)
+    if base_sum <= 0:
+        raise ValueError('Base train fusion ratios must sum to a positive number.')
+    scaled_base = [(ratio / base_sum) * (1.0 - openrr_ratio) for ratio in base_ratios]
+    print('[i] using optional OpenRR training data: {} imgs from {}'.format(
+        len(openrr_dataset), opt.openrr_train_dir))
+    return datasets_list + [openrr_dataset], scaled_base + [openrr_ratio]
+
 train_dataset = datasets.CEILDataset(
     datadir_syn, read_fns('VOC2012_224_train_png.txt'), size=opt.max_dataset_size, enable_transforms=True, 
     low_sigma=opt.low_sigma, high_sigma=opt.high_sigma,
@@ -57,7 +81,14 @@ train_dataset = datasets.CEILDataset(
 
 train_dataset_real = datasets.CEILTestDataset(datadir_real, enable_transforms=True)
 
-train_dataset_fusion = datasets.FusionDataset([train_dataset, train_dataset_real], [0.7, 0.3])
+train_datasets = [train_dataset, train_dataset_real]
+train_ratios = parse_float_list(opt.train_fusion_ratios)
+if len(train_ratios) != len(train_datasets):
+    raise ValueError('--train_fusion_ratios must provide {} values, got {}'.format(
+        len(train_datasets), len(train_ratios)))
+train_datasets, train_ratios = append_optional_openrr(train_datasets, train_ratios)
+
+train_dataset_fusion = datasets.FusionDataset(train_datasets, train_ratios)
 
 train_dataloader_fusion = datasets.DataLoader(
     train_dataset_fusion, batch_size=opt.batchSize, shuffle=not opt.serial_batches, 
@@ -103,7 +134,12 @@ while engine.epoch < opt.nEpochs:
     if engine.epoch == 40:
         set_learning_rate(opt.lr * 0.1)
     if engine.epoch == 45:
-        ratio = [0.5, 0.5]
+        if len(train_dataset_fusion.datasets) == 2:
+            ratio = [0.5, 0.5]
+        else:
+            openrr_ratio = train_dataset_fusion.fusion_ratios[-1]
+            remaining_ratio = 1.0 - openrr_ratio
+            ratio = [0.5 * remaining_ratio, 0.5 * remaining_ratio, openrr_ratio]
         print('[i] adjust fusion ratio to {}'.format(ratio))
         train_dataset_fusion.fusion_ratios = ratio
         set_learning_rate(opt.lr * 0.5)
