@@ -12,6 +12,10 @@ This branch adds a stronger from-scratch model for single image reflection remov
 - Global color-affine branch and gated mask branch
 - OpenRR-5k training support
 
+The default `errnet_pp` width is 128 channels. With hypercolumn input, it has
+about 23.4M parameters, compared with about 19.0M parameters for the original
+ERRNet baseline.
+
 ## Training Data
 
 The default training fusion is:

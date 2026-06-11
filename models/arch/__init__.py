@@ -20,4 +20,4 @@ def errnet_adapter(in_channels, out_channels, **kwargs):
 
 
 def errnet_pp(in_channels, out_channels, **kwargs):
-    return ERRNetPP(in_channels, out_channels, base_channels=112, growth_channels=32)
+    return ERRNetPP(in_channels, out_channels, base_channels=128, growth_channels=32)
