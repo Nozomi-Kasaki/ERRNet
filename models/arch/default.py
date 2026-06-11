@@ -467,3 +467,133 @@ class RDAUNet(nn.Module):
         d1 = self.up1(d2, e1)
         correction = self.out_conv(self.refine(d1))
         return torch.sigmoid(base_logit + correction)
+
+
+class ERRNetPP(nn.Module):
+    """A stronger from-scratch reflection removal network.
+
+    The network keeps ERRNet's PSNR-friendly residual output parameterization,
+    but expands the feature extractor with a dual-stream stem, deeper residual
+    dense attention blocks, a bottleneck ASPP context module, and a global
+    color-affine branch.
+    """
+    def __init__(self, in_channels, out_channels=3, base_channels=96, growth_channels=32):
+        super(ERRNetPP, self).__init__()
+        c1 = base_channels
+        c2 = base_channels * 2
+        c3 = base_channels * 4
+
+        self.edge = SobelEdgeExtractor()
+        self.rgb_stem = nn.Sequential(
+            nn.Conv2d(3, c1, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(c1, c1, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+        hyper_channels = max(in_channels - 3, 0)
+        self.hyper_stem = None
+        if hyper_channels > 0:
+            self.hyper_stem = nn.Sequential(
+                nn.Conv2d(hyper_channels, c1, kernel_size=1),
+                nn.LeakyReLU(0.2, inplace=True),
+                nn.Conv2d(c1, c1, kernel_size=3, padding=1),
+                nn.LeakyReLU(0.2, inplace=True),
+            )
+        self.edge_stem = nn.Sequential(
+            nn.Conv2d(1, c1, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(c1, c1, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+        self.stem_fuse = nn.Sequential(
+            nn.Conv2d(c1 * 3, c1, kernel_size=1),
+            nn.LeakyReLU(0.2, inplace=True),
+        )
+
+        self.enc1 = RDABlockStack(c1, num_blocks=3, growth_channels=growth_channels)
+        self.down1 = DownsampleBlock(c1, c2)
+        self.enc2 = RDABlockStack(c2, num_blocks=4, growth_channels=growth_channels)
+        self.down2 = DownsampleBlock(c2, c3)
+
+        self.bottleneck = nn.Sequential(
+            RDABlockStack(c3, num_blocks=4, growth_channels=growth_channels),
+            ASPPContext(c3),
+            RDABlockStack(c3, num_blocks=4, growth_channels=growth_channels),
+        )
+
+        self.up2 = UpsampleFuseBlock(c3, c2, c2, num_blocks=4, growth_channels=growth_channels)
+        self.up1 = UpsampleFuseBlock(c2, c1, c1, num_blocks=3, growth_channels=growth_channels)
+        self.refine = nn.Sequential(
+            RDABlockStack(c1, num_blocks=2, growth_channels=growth_channels),
+            CBAM(c1, reduction=8),
+        )
+
+        self.coarse_head = nn.Conv2d(c3, out_channels, kernel_size=1)
+        self.delta_head = nn.Conv2d(c1, out_channels, kernel_size=3, padding=1)
+        self.mask_head = nn.Conv2d(c1, 1, kernel_size=3, padding=1)
+        self.global_affine = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(c3, c1, kernel_size=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(c1, out_channels * 2, kernel_size=1),
+        )
+
+        self.output_scale = nn.Parameter(torch.tensor(0.0))
+        self.coarse_scale = nn.Parameter(torch.tensor(0.0))
+        self.last_mask = None
+        self.last_delta = None
+        self.last_coarse = None
+        self.last_affine = None
+        self._init_heads()
+
+    def _init_heads(self):
+        nn.init.normal_(self.coarse_head.weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.coarse_head.bias, 0.0)
+        nn.init.normal_(self.delta_head.weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.delta_head.bias, 0.0)
+        nn.init.normal_(self.mask_head.weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.mask_head.bias, -2.0)
+        nn.init.normal_(self.global_affine[-1].weight, mean=0.0, std=1e-3)
+        nn.init.constant_(self.global_affine[-1].bias, 0.0)
+
+    def forward(self, x):
+        base_rgb = torch.clamp(x[:, :3], 1e-4, 1 - 1e-4)
+        base_logit = torch.log(base_rgb / (1 - base_rgb))
+
+        rgb_feat = self.rgb_stem(base_rgb)
+        if self.hyper_stem is not None:
+            hyper_feat = self.hyper_stem(x[:, 3:])
+        else:
+            hyper_feat = torch.zeros_like(rgb_feat)
+        edge_feat = self.edge_stem(self.edge(base_rgb))
+        stem = self.stem_fuse(torch.cat([rgb_feat, hyper_feat, edge_feat], dim=1))
+
+        e1 = self.enc1(stem)
+        e2 = self.enc2(self.down1(e1))
+        bottleneck = self.bottleneck(self.down2(e2))
+
+        coarse = torch.tanh(self.coarse_head(bottleneck))
+        coarse = F.interpolate(coarse, size=e1.shape[-2:], mode='bilinear', align_corners=False)
+
+        d2 = self.up2(bottleneck, e2)
+        d1 = self.up1(d2, e1)
+        feat = self.refine(d1)
+
+        mask = torch.sigmoid(self.mask_head(feat))
+        fine_delta = torch.tanh(self.delta_head(feat))
+        affine = self.global_affine(bottleneck)
+        scale_raw, bias_raw = torch.chunk(affine, 2, dim=1)
+        scale = 1.0 + 0.1 * torch.tanh(scale_raw)
+        bias = 0.05 * torch.tanh(bias_raw)
+
+        fine_scale = 0.15 * torch.sigmoid(self.output_scale)
+        coarse_scale = 0.15 * torch.sigmoid(self.coarse_scale)
+        correction = mask * (fine_delta * fine_scale + coarse * coarse_scale)
+        correction = correction * scale + bias
+
+        self.last_mask = mask
+        self.last_delta = correction
+        self.last_coarse = coarse
+        self.last_affine = (scale, bias)
+
+        return torch.sigmoid(base_logit + correction)
