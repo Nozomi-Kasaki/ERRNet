@@ -54,24 +54,63 @@ def parse_float_list(value):
     return [float(v.strip()) for v in str(value).split(',') if v.strip()]
 
 
-def append_optional_openrr(datasets_list, base_ratios):
-    if not opt.openrr_train_dir:
-        return datasets_list, base_ratios
-    if not exists(opt.openrr_train_dir):
-        raise FileNotFoundError('OpenRR training directory does not exist: {}'.format(opt.openrr_train_dir))
+def _append_optional_source(datasets_list, ratios, dataset, ratio, label):
+    ratio = max(0.0, min(1.0, ratio))
+    if ratio <= 0:
+        return datasets_list, ratios
+    print('[i] using optional {} training data: {} imgs from {}'.format(
+        label, len(dataset), getattr(dataset, 'datadir', 'unknown')))
+    return datasets_list + [dataset], ratios + [ratio]
 
-    openrr_dataset = datasets.CEILTestDataset(
-        opt.openrr_train_dir,
-        size=opt.max_dataset_size,
-        enable_transforms=True)
-    openrr_ratio = max(0.0, min(1.0, opt.openrr_train_ratio))
+
+def append_optional_sources(datasets_list, base_ratios):
+    optional_sources = []
+
+    if opt.identity_train_ratio > 0 and not opt.identity_train_dir:
+        raise ValueError('identity_train_ratio is set but identity_train_dir is missing.')
+
+    if opt.openrr_train_dir:
+        if not exists(opt.openrr_train_dir):
+            raise FileNotFoundError('OpenRR training directory does not exist: {}'.format(opt.openrr_train_dir))
+        openrr_ratio = max(0.0, min(1.0, opt.openrr_train_ratio))
+        if openrr_ratio > 0:
+            openrr_dataset = datasets.CEILTestDataset(
+                opt.openrr_train_dir,
+                size=opt.max_dataset_size,
+                enable_transforms=True)
+            optional_sources.append(('OpenRR', openrr_dataset, openrr_ratio))
+
+    if opt.identity_train_dir:
+        if not exists(opt.identity_train_dir):
+            raise FileNotFoundError('Identity training directory does not exist: {}'.format(opt.identity_train_dir))
+        identity_ratio = max(0.0, min(1.0, opt.identity_train_ratio))
+        if identity_ratio > 0:
+            identity_fns = read_fns(opt.identity_train_filelist) if opt.identity_train_filelist else None
+            identity_size = opt.identity_train_size
+            if opt.max_dataset_size is not None:
+                identity_size = opt.max_dataset_size if identity_size is None else min(identity_size, opt.max_dataset_size)
+            identity_dataset = datasets.IdentityDataset(
+                opt.identity_train_dir,
+                fns=identity_fns,
+                size=identity_size,
+                enable_transforms=True)
+            optional_sources.append(('identity', identity_dataset, identity_ratio))
+
+    optional_ratio_sum = sum(ratio for _, _, ratio in optional_sources)
+    if optional_ratio_sum >= 1.0:
+        raise ValueError('Optional dataset ratios must sum to less than 1.0, got {}'.format(optional_ratio_sum))
+
     base_sum = sum(base_ratios)
     if base_sum <= 0:
         raise ValueError('Base train fusion ratios must sum to a positive number.')
-    scaled_base = [(ratio / base_sum) * (1.0 - openrr_ratio) for ratio in base_ratios]
-    print('[i] using optional OpenRR training data: {} imgs from {}'.format(
-        len(openrr_dataset), opt.openrr_train_dir))
-    return datasets_list + [openrr_dataset], scaled_base + [openrr_ratio]
+    scaled_base = [(ratio / base_sum) * (1.0 - optional_ratio_sum) for ratio in base_ratios]
+
+    for label, dataset, ratio in optional_sources:
+        if ratio > 0:
+            print('[i] using optional {} training data: {} imgs from {}'.format(
+                label, len(dataset), getattr(dataset, 'datadir', 'unknown')))
+
+    return datasets_list + [dataset for _, dataset, _ in optional_sources], scaled_base + [ratio for _, _, ratio in optional_sources]
 
 train_dataset = datasets.CEILDataset(
     datadir_syn, read_fns('VOC2012_224_train_png.txt'), size=opt.max_dataset_size, enable_transforms=True, 
@@ -86,7 +125,7 @@ train_ratios = parse_float_list(opt.train_fusion_ratios)
 if len(train_ratios) != len(train_datasets):
     raise ValueError('--train_fusion_ratios must provide {} values, got {}'.format(
         len(train_datasets), len(train_ratios)))
-train_datasets, train_ratios = append_optional_openrr(train_datasets, train_ratios)
+train_datasets, train_ratios = append_optional_sources(train_datasets, train_ratios)
 
 train_dataset_fusion = datasets.FusionDataset(train_datasets, train_ratios)
 
@@ -134,12 +173,9 @@ while engine.epoch < opt.nEpochs:
     if engine.epoch == 40:
         set_learning_rate(opt.lr * 0.1)
     if engine.epoch == 45:
-        if len(train_dataset_fusion.datasets) == 2:
-            ratio = [0.5, 0.5]
-        else:
-            openrr_ratio = train_dataset_fusion.fusion_ratios[-1]
-            remaining_ratio = 1.0 - openrr_ratio
-            ratio = [0.5 * remaining_ratio, 0.5 * remaining_ratio, openrr_ratio]
+        optional_ratios = train_dataset_fusion.fusion_ratios[2:]
+        remaining_ratio = max(0.0, 1.0 - sum(optional_ratios))
+        ratio = [0.5 * remaining_ratio, 0.5 * remaining_ratio] + optional_ratios
         print('[i] adjust fusion ratio to {}'.format(ratio))
         train_dataset_fusion.fusion_ratios = ratio
         set_learning_rate(opt.lr * 0.5)

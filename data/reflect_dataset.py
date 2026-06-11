@@ -235,6 +235,58 @@ class CEILTestDataset(BaseDataset):
             return len(self.fns)
 
 
+class IdentityDataset(BaseDataset):
+    """Clean-image identity samples: input equals target transmission."""
+
+    def __init__(self, datadir, fns=None, size=None, enable_transforms=True,
+                 round_factor=1, max_long_edge=None):
+        super(IdentityDataset, self).__init__()
+        self.size = size
+        self.datadir = datadir
+        self.enable_transforms = enable_transforms
+        self.round_factor = round_factor
+        self.max_long_edge = max_long_edge
+
+        sortkey = lambda key: os.path.split(key)[-1]
+        self.paths = sorted(make_dataset(datadir, fns), key=sortkey)
+        if size is not None:
+            self.paths = self.paths[:size]
+
+        if not self.paths:
+            raise RuntimeError('No identity training images found in {}'.format(datadir))
+
+    def reset(self, shuffle=True):
+        if shuffle:
+            random.shuffle(self.paths)
+
+    def __getitem__(self, index):
+        path = self.paths[index % len(self.paths)]
+        img = Image.open(path).convert('RGB')
+
+        if self.enable_transforms:
+            t_img, m_img = paired_data_transforms(img, img)
+        else:
+            t_img = _resize_long_edge(img, self.max_long_edge, self.round_factor)
+            m_img = t_img
+
+        B = to_tensor(t_img)
+        M = to_tensor(m_img)
+        return {
+            'input': M,
+            'target_t': B,
+            'target_r': torch.zeros_like(B),
+            'fn': os.path.basename(path),
+            'real': False,
+            'unaligned': False,
+            'identity': True,
+        }
+
+    def __len__(self):
+        if self.size is not None:
+            return min(len(self.paths), self.size)
+        return len(self.paths)
+
+
 class RealDataset(BaseDataset):
     def __init__(self, datadir, fns=None, size=None, round_factor=1, max_long_edge=None):
         super(RealDataset, self).__init__()
