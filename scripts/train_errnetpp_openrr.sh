@@ -35,4 +35,4 @@ fi
   --openrr_train_dir datasets/processed_data/OpenRR-5k \
   --openrr_train_ratio 0.25 \
   --train_fusion_ratios 0.7,0.3 \
-  --train_eval_epoch_schedule 1:70
+  --train_eval_epoch_schedule 5:50,1:70

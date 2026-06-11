@@ -38,6 +38,9 @@ Run:
 bash scripts/train_errnetpp_openrr.sh
 ```
 
+The evaluation schedule is every 5 epochs through epoch 50, then every epoch
+from epoch 51 to epoch 70.
+
 The best checkpoint will be saved to:
 
 ```text
