@@ -1,0 +1,322 @@
+[i] reflection sythesis model: {'kernel_sizes': [7, 9, 11, 15, 21], 'low_sigma': 2, 'high_sigma': 5, 'low
+[i] using a fusion dataset: 7732 [7643, 89] imgs fused with ratio [0.7, 0.3]
+[i] initialization method [edsr]
+[i] initialization method [kaiming]
+[i] set learning rate to 0.0001
+Epoch: 0
+saving the latest model at the end of epoch 1, iters 7732
+Time Taken: 558 sec
+Reset Dataset...
+Epoch: 1
+Time Taken: 559 sec
+Reset Dataset...
+Epoch: 2
+Time Taken: 559 sec
+Reset Dataset...
+Epoch: 3
+Time Taken: 564 sec
+Reset Dataset...
+Epoch: 4
+Time Taken: 568 sec
+Reset Dataset...
+[i] full evaluation at epoch_5_end (epoch 5, iter 38660)
+[eval] mean metric deltas: PSNR=-2.6739, SSIM=-0.0336, NCC=-0.0293, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.069114
+[eval] saved new best checkpoint: best_eval (score -0.069114)
+Epoch: 5
+Time Taken: 568 sec
+Reset Dataset...
+Epoch: 6
+Time Taken: 570 sec
+Reset Dataset...
+Epoch: 7
+Time Taken: 564 sec
+Reset Dataset...
+Epoch: 8
+Time Taken: 573 sec
+Reset Dataset...
+Epoch: 9
+saving the latest model at the end of epoch 10, iters 77320
+Time Taken: 570 sec
+Reset Dataset...
+[i] full evaluation at epoch_10_end (epoch 10, iter 77320)
+[eval] mean metric deltas: PSNR=-2.7141, SSIM=-0.0342, NCC=-0.0443, LMSE=+0.0035
+[eval] selection score (mean relative PSNR/SSIM): -0.071396
+Epoch: 10
+Time Taken: 564 sec
+Reset Dataset...
+Epoch: 11
+Time Taken: 569 sec
+Reset Dataset...
+Epoch: 12
+Time Taken: 566 sec
+Reset Dataset...
+Epoch: 13
+Time Taken: 570 sec
+Reset Dataset...
+Epoch: 14
+Time Taken: 568 sec
+Reset Dataset...
+[i] full evaluation at epoch_15_end (epoch 15, iter 115980)
+[eval] mean metric deltas: PSNR=-2.3861, SSIM=-0.0275, NCC=-0.0333, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.060582
+[eval] saved new best checkpoint: best_eval (score -0.060582)
+Epoch: 15
+Time Taken: 569 sec
+Reset Dataset...
+Epoch: 16
+Time Taken: 566 sec
+Reset Dataset...
+Epoch: 17
+Time Taken: 563 sec
+Reset Dataset...
+Epoch: 18
+Time Taken: 566 sec
+Reset Dataset...
+Epoch: 19
+saving the latest model at the end of epoch 20, iters 154640
+Time Taken: 564 sec
+Reset Dataset...
+[i] full evaluation at epoch_20_end (epoch 20, iter 154640)
+[eval] mean metric deltas: PSNR=-2.8607, SSIM=-0.0361, NCC=-0.0516, LMSE=+0.0037
+[eval] selection score (mean relative PSNR/SSIM): -0.075724
+Epoch: 20
+Time Taken: 561 sec
+Reset Dataset...
+Epoch: 21
+Time Taken: 563 sec
+Reset Dataset...
+Epoch: 22
+Time Taken: 556 sec
+Reset Dataset...
+Epoch: 23
+Time Taken: 556 sec
+Reset Dataset...
+Epoch: 24
+Time Taken: 558 sec
+Reset Dataset...
+[i] full evaluation at epoch_25_end (epoch 25, iter 193300)
+[eval] mean metric deltas: PSNR=-2.2044, SSIM=-0.0228, NCC=-0.0251, LMSE=+0.0016
+[eval] selection score (mean relative PSNR/SSIM): -0.053951
+[eval] saved new best checkpoint: best_eval (score -0.053951)
+Epoch: 25
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 26
+Time Taken: 555 sec
+Reset Dataset...
+Epoch: 27
+Time Taken: 555 sec
+Reset Dataset...
+Epoch: 28
+Time Taken: 558 sec
+Reset Dataset...
+Epoch: 29
+saving the latest model at the end of epoch 30, iters 231960
+Time Taken: 564 sec
+Reset Dataset...
+[i] full evaluation at epoch_30_end (epoch 30, iter 231960)
+[eval] mean metric deltas: PSNR=-1.8780, SSIM=-0.0163, NCC=-0.0185, LMSE=+0.0008
+[eval] selection score (mean relative PSNR/SSIM): -0.043354
+[eval] saved new best checkpoint: best_eval (score -0.043354)
+[i] set learning rate to 5e-05
+Epoch: 30
+Time Taken: 562 sec
+Reset Dataset...
+Epoch: 31
+Time Taken: 556 sec
+Reset Dataset...
+Epoch: 32
+Time Taken: 552 sec
+Reset Dataset...
+Epoch: 33
+Time Taken: 554 sec
+Reset Dataset...
+Epoch: 34
+Time Taken: 559 sec
+Reset Dataset...
+[i] full evaluation at epoch_35_end (epoch 35, iter 270620)
+[eval] mean metric deltas: PSNR=-2.9664, SSIM=-0.0379, NCC=-0.0501, LMSE=+0.0041
+[eval] selection score (mean relative PSNR/SSIM): -0.079595
+Epoch: 35
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 36
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 37
+Time Taken: 559 sec
+Reset Dataset...
+Epoch: 38
+Time Taken: 553 sec
+Reset Dataset...
+Epoch: 39
+saving the latest model at the end of epoch 40, iters 309280
+Time Taken: 554 sec
+Reset Dataset...
+[i] full evaluation at epoch_40_end (epoch 40, iter 309280)
+[eval] mean metric deltas: PSNR=-1.9427, SSIM=-0.0199, NCC=-0.0255, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.047617
+[i] set learning rate to 1e-05
+Epoch: 40
+Time Taken: 554 sec
+Reset Dataset...
+Epoch: 41
+Time Taken: 551 sec
+Reset Dataset...
+Epoch: 42
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 43
+Time Taken: 557 sec
+Reset Dataset...
+Epoch: 44
+Time Taken: 550 sec
+Reset Dataset...
+[i] full evaluation at epoch_45_end (epoch 45, iter 347940)
+[eval] mean metric deltas: PSNR=-2.0411, SSIM=-0.0208, NCC=-0.0281, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.050268
+[i] adjust fusion ratio to [0.5, 0.5]
+[i] set learning rate to 5e-05
+Epoch: 45
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 46
+Time Taken: 550 sec
+Reset Dataset...
+Epoch: 47
+Time Taken: 557 sec
+Reset Dataset...
+Epoch: 48
+Time Taken: 560 sec
+Reset Dataset...
+Epoch: 49
+saving the latest model at the end of epoch 50, iters 386600
+Time Taken: 553 sec
+Reset Dataset...
+[i] full evaluation at epoch_50_end (epoch 50, iter 386600)
+[eval] mean metric deltas: PSNR=-2.1632, SSIM=-0.0242, NCC=-0.0344, LMSE=+0.0030
+[eval] selection score (mean relative PSNR/SSIM): -0.054679
+[i] set learning rate to 1e-05
+Epoch: 50
+Time Taken: 553 sec
+Reset Dataset...
+[i] full evaluation at epoch_51_end (epoch 51, iter 394332)
+[eval] mean metric deltas: PSNR=-2.2840, SSIM=-0.0231, NCC=-0.0300, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.056450
+Epoch: 51
+Time Taken: 550 sec
+Reset Dataset...
+[i] full evaluation at epoch_52_end (epoch 52, iter 402064)
+[eval] mean metric deltas: PSNR=-2.3007, SSIM=-0.0245, NCC=-0.0332, LMSE=+0.0027
+[eval] selection score (mean relative PSNR/SSIM): -0.057737
+Epoch: 52
+Time Taken: 560 sec
+Reset Dataset...
+[i] full evaluation at epoch_53_end (epoch 53, iter 409796)
+[eval] mean metric deltas: PSNR=-2.3142, SSIM=-0.0238, NCC=-0.0301, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.057495
+Epoch: 53
+Time Taken: 547 sec
+Reset Dataset...
+[i] full evaluation at epoch_54_end (epoch 54, iter 417528)
+[eval] mean metric deltas: PSNR=-1.9902, SSIM=-0.0190, NCC=-0.0257, LMSE=+0.0015
+[eval] selection score (mean relative PSNR/SSIM): -0.048052
+Epoch: 54
+Time Taken: 556 sec
+Reset Dataset...
+[i] full evaluation at epoch_55_end (epoch 55, iter 425260)
+[eval] mean metric deltas: PSNR=-2.0957, SSIM=-0.0212, NCC=-0.0290, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.051479
+Epoch: 55
+Time Taken: 548 sec
+Reset Dataset...
+[i] full evaluation at epoch_56_end (epoch 56, iter 432992)
+[eval] mean metric deltas: PSNR=-2.1728, SSIM=-0.0233, NCC=-0.0310, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.054487
+Epoch: 56
+Time Taken: 547 sec
+Reset Dataset...
+[i] full evaluation at epoch_57_end (epoch 57, iter 440724)
+[eval] mean metric deltas: PSNR=-2.1017, SSIM=-0.0229, NCC=-0.0300, LMSE=+0.0023
+[eval] selection score (mean relative PSNR/SSIM): -0.052823
+Epoch: 57
+Time Taken: 563 sec
+Reset Dataset...
+[i] full evaluation at epoch_58_end (epoch 58, iter 448456)
+[eval] mean metric deltas: PSNR=-2.1790, SSIM=-0.0237, NCC=-0.0299, LMSE=+0.0025
+[eval] selection score (mean relative PSNR/SSIM): -0.054789
+Epoch: 58
+Time Taken: 555 sec
+Reset Dataset...
+[i] full evaluation at epoch_59_end (epoch 59, iter 456188)
+[eval] mean metric deltas: PSNR=-2.3031, SSIM=-0.0251, NCC=-0.0317, LMSE=+0.0026
+[eval] selection score (mean relative PSNR/SSIM): -0.058364
+Epoch: 59
+saving the latest model at the end of epoch 60, iters 463920
+Time Taken: 557 sec
+Reset Dataset...
+[i] full evaluation at epoch_60_end (epoch 60, iter 463920)
+[eval] mean metric deltas: PSNR=-2.1289, SSIM=-0.0225, NCC=-0.0288, LMSE=+0.0023
+[eval] selection score (mean relative PSNR/SSIM): -0.052987
+Epoch: 60
+Time Taken: 560 sec
+Reset Dataset...
+[i] full evaluation at epoch_61_end (epoch 61, iter 471652)
+[eval] mean metric deltas: PSNR=-2.0168, SSIM=-0.0197, NCC=-0.0251, LMSE=+0.0018
+[eval] selection score (mean relative PSNR/SSIM): -0.049011
+Epoch: 61
+Time Taken: 558 sec
+Reset Dataset...
+[i] full evaluation at epoch_62_end (epoch 62, iter 479384)
+[eval] mean metric deltas: PSNR=-2.1221, SSIM=-0.0228, NCC=-0.0295, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.053152
+Epoch: 62
+Time Taken: 553 sec
+Reset Dataset...
+[i] full evaluation at epoch_63_end (epoch 63, iter 487116)
+[eval] mean metric deltas: PSNR=-2.1540, SSIM=-0.0227, NCC=-0.0286, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.053736
+Epoch: 63
+Time Taken: 552 sec
+Reset Dataset...
+[i] full evaluation at epoch_64_end (epoch 64, iter 494848)
+[eval] mean metric deltas: PSNR=-2.2107, SSIM=-0.0242, NCC=-0.0313, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.055771
+Epoch: 64
+Time Taken: 557 sec
+Reset Dataset...
+[i] full evaluation at epoch_65_end (epoch 65, iter 502580)
+[eval] mean metric deltas: PSNR=-2.1106, SSIM=-0.0209, NCC=-0.0293, LMSE=+0.0021
+[eval] selection score (mean relative PSNR/SSIM): -0.051738
+Epoch: 65
+Time Taken: 555 sec
+Reset Dataset...
+[i] full evaluation at epoch_66_end (epoch 66, iter 510312)
+[eval] mean metric deltas: PSNR=-2.1759, SSIM=-0.0221, NCC=-0.0286, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.053677
+Epoch: 66
+Time Taken: 560 sec
+Reset Dataset...
+[i] full evaluation at epoch_67_end (epoch 67, iter 518044)
+[eval] mean metric deltas: PSNR=-2.1608, SSIM=-0.0215, NCC=-0.0282, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.052998
+Epoch: 67
+Time Taken: 549 sec
+Reset Dataset...
+[i] full evaluation at epoch_68_end (epoch 68, iter 525776)
+[eval] mean metric deltas: PSNR=-2.1580, SSIM=-0.0221, NCC=-0.0296, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.053432
+Epoch: 68
+Time Taken: 557 sec
+Reset Dataset...
+[i] full evaluation at epoch_69_end (epoch 69, iter 533508)
+[eval] mean metric deltas: PSNR=-2.2151, SSIM=-0.0249, NCC=-0.0321, LMSE=+0.0027
+[eval] selection score (mean relative PSNR/SSIM): -0.056360
+Epoch: 69
+saving the latest model at the end of epoch 70, iters 541240
+Time Taken: 545 sec
+Reset Dataset...
+[i] full evaluation at epoch_70_end (epoch 70, iter 541240)
+[eval] mean metric deltas: PSNR=-2.2674, SSIM=-0.0252, NCC=-0.0337, LMSE=+0.0029
+[eval] selection score (mean relative PSNR/SSIM): -0.057626

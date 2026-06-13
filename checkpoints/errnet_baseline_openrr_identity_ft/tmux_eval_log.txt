@@ -1,0 +1,555 @@
+[i] reflection sythesis model: {'kernel_sizes': [7, 9, 11, 15, 21], 'low_sigma': 2, 'high_sigma': 5, 'low_gamma': 1.3, 'high_gamma': 1.3, 'enhanced': True, 'reflection_alpha': (0.45, 1.0), 'transmission_alpha': (0.95, 1.0), 'color_jitter': 0.03, 'shift': 3, 'noise_std': 0.0, 'jpeg_prob': 0.0, 'jpeg_quality': (55, 95)}
+[i] using optional OpenRR training data: 5000 imgs from datasets/processed_data/OpenRR-5k
+[i] using optional identity training data: 2000 imgs from datasets/processed_data/VOCdevkit/VOC2012/PNGImages
+[i] using a fusion dataset: 14732 [7643, 89, 5000, 2000] imgs fused with ratio [0.45499999999999996, 0.195, 0.25, 0.1]
+[i] initialization method [edsr]
+[i] initialization method [kaiming]
+[i] reset epoch/iteration counters after loading initialization checkpoint
+[i] full evaluation at resume_start (epoch 0, iter 0)
+[eval] ceilnet_table2: PSNR=27.8766, SSIM=0.9407, NCC=0.9808, LMSE=0.0048 | vs baseline: dPSNR=-0.0034, dSSIM=-0.0000, dNCC=-0.0000, dLMSE=+0.0000
+[eval] real20: PSNR=23.5531, SSIM=0.8285, NCC=0.8877, LMSE=0.0201 | vs baseline: dPSNR=+0.0031, dSSIM=-0.0000, dNCC=+0.0000, dLMSE=+0.0000
+[eval] objects: PSNR=24.8533, SSIM=0.8980, NCC=0.9817, LMSE=0.0029 | vs baseline: dPSNR=+0.0033, dSSIM=+0.0000, dNCC=+0.0000, dLMSE=+0.0000
+[eval] postcard: PSNR=22.0702, SSIM=0.8773, NCC=0.9463, LMSE=0.0044 | vs baseline: dPSNR=+0.0002, dSSIM=-0.0000, dNCC=-0.0000, dLMSE=-0.0000
+[eval] wild: PSNR=25.1778, SSIM=0.8861, NCC=0.9359, LMSE=0.0083 | vs baseline: dPSNR=-0.0022, dSSIM=+0.0001, dNCC=+0.0000, dLMSE=-0.0000
+[eval] mean metric deltas: PSNR=+0.0002, SSIM=+0.0000, NCC=+0.0000, LMSE=+0.0000
+[eval] selection score (mean relative PSNR/SSIM): +0.000015
+[eval] saved new best checkpoint: best_eval (score +0.000015)
+[i] set learning rate to 1e-05 (group0=1e-05)
+Epoch: 0
+saving the latest model at the end of epoch 1, iters 14732
+Time Taken: 1284 sec
+Reset Dataset...
+Epoch: 1
+saving the latest model at the end of epoch 2, iters 29464
+Time Taken: 1127 sec
+Reset Dataset...
+Epoch: 2
+saving the latest model at the end of epoch 3, iters 44196
+Time Taken: 1255 sec
+Reset Dataset...
+Epoch: 3
+saving the latest model at the end of epoch 4, iters 58928
+Time Taken: 1257 sec
+Reset Dataset...
+Epoch: 4
+saving the latest model at the end of epoch 5, iters 73660
+Time Taken: 1261 sec
+Reset Dataset...
+[i] full evaluation at epoch_5_end (epoch 5, iter 73660)
+[eval] ceilnet_table2: PSNR=27.7510, SSIM=0.9417, NCC=0.9821, LMSE=0.0042 | vs baseline: dPSNR=-0.1290, dSSIM=+0.0010, dNCC=+0.0013, dLMSE=-0.0006
+[eval] real20: PSNR=23.4966, SSIM=0.8258, NCC=0.8915, LMSE=0.0194 | vs baseline: dPSNR=-0.0534, dSSIM=-0.0027, dNCC=+0.0038, dLMSE=-0.0007
+[eval] objects: PSNR=24.4265, SSIM=0.8919, NCC=0.9826, LMSE=0.0035 | vs baseline: dPSNR=-0.4235, dSSIM=-0.0061, dNCC=+0.0009, dLMSE=+0.0006
+[eval] postcard: PSNR=22.6347, SSIM=0.8869, NCC=0.9514, LMSE=0.0045 | vs baseline: dPSNR=+0.5647, dSSIM=+0.0096, dNCC=+0.0051, dLMSE=+0.0001
+[eval] wild: PSNR=25.9654, SSIM=0.9139, NCC=0.9520, LMSE=0.0046 | vs baseline: dPSNR=+0.7854, dSSIM=+0.0279, dNCC=+0.0161, dLMSE=-0.0037
+[eval] mean metric deltas: PSNR=+0.1488, SSIM=+0.0060, NCC=+0.0054, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.006636
+[eval] saved new best checkpoint: best_eval (score +0.006636)
+Epoch: 5
+saving the latest model at the end of epoch 6, iters 88392
+Time Taken: 1264 sec
+Reset Dataset...
+Epoch: 6
+saving the latest model at the end of epoch 7, iters 103124
+Time Taken: 1260 sec
+Reset Dataset...
+Epoch: 7
+saving the latest model at the end of epoch 8, iters 117856
+Time Taken: 1260 sec
+Reset Dataset...
+Epoch: 8
+saving the latest model at the end of epoch 9, iters 132588
+Time Taken: 1259 sec
+Reset Dataset...
+Epoch: 9
+saving the model at epoch 10, iters 147320
+saving the latest model at the end of epoch 10, iters 147320
+Time Taken: 1267 sec
+Reset Dataset...
+[i] full evaluation at epoch_10_end (epoch 10, iter 147320)
+[eval] ceilnet_table2: PSNR=27.9536, SSIM=0.9419, NCC=0.9826, LMSE=0.0042 | vs baseline: dPSNR=+0.0736, dSSIM=+0.0012, dNCC=+0.0018, dLMSE=-0.0006
+[eval] real20: PSNR=23.5934, SSIM=0.8262, NCC=0.8921, LMSE=0.0194 | vs baseline: dPSNR=+0.0434, dSSIM=-0.0023, dNCC=+0.0044, dLMSE=-0.0007
+[eval] objects: PSNR=24.2742, SSIM=0.8904, NCC=0.9833, LMSE=0.0036 | vs baseline: dPSNR=-0.5758, dSSIM=-0.0076, dNCC=+0.0016, dLMSE=+0.0007
+[eval] postcard: PSNR=22.6359, SSIM=0.8898, NCC=0.9522, LMSE=0.0046 | vs baseline: dPSNR=+0.5659, dSSIM=+0.0125, dNCC=+0.0059, dLMSE=+0.0002
+[eval] wild: PSNR=26.0263, SSIM=0.9153, NCC=0.9539, LMSE=0.0044 | vs baseline: dPSNR=+0.8463, dSSIM=+0.0293, dNCC=+0.0180, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=+0.1907, SSIM=+0.0066, NCC=+0.0063, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.007795
+[eval] saved new best checkpoint: best_eval (score +0.007795)
+Epoch: 10
+saving the latest model at the end of epoch 11, iters 162052
+Time Taken: 1269 sec
+Reset Dataset...
+Epoch: 11
+saving the latest model at the end of epoch 12, iters 176784
+Time Taken: 1268 sec
+Reset Dataset...
+Epoch: 12
+saving the latest model at the end of epoch 13, iters 191516
+Time Taken: 1268 sec
+Reset Dataset...
+Epoch: 13
+saving the latest model at the end of epoch 14, iters 206248
+Time Taken: 1262 sec
+Reset Dataset...
+Epoch: 14
+saving the latest model at the end of epoch 15, iters 220980
+Time Taken: 1204 sec
+Reset Dataset...
+[i] full evaluation at epoch_15_end (epoch 15, iter 220980)
+[eval] ceilnet_table2: PSNR=28.0908, SSIM=0.9415, NCC=0.9824, LMSE=0.0042 | vs baseline: dPSNR=+0.2108, dSSIM=+0.0008, dNCC=+0.0016, dLMSE=-0.0006
+[eval] real20: PSNR=23.5081, SSIM=0.8234, NCC=0.8900, LMSE=0.0198 | vs baseline: dPSNR=-0.0419, dSSIM=-0.0051, dNCC=+0.0023, dLMSE=-0.0003
+[eval] objects: PSNR=24.3488, SSIM=0.8903, NCC=0.9821, LMSE=0.0035 | vs baseline: dPSNR=-0.5012, dSSIM=-0.0077, dNCC=+0.0004, dLMSE=+0.0006
+[eval] postcard: PSNR=22.3115, SSIM=0.8915, NCC=0.9510, LMSE=0.0046 | vs baseline: dPSNR=+0.2415, dSSIM=+0.0142, dNCC=+0.0047, dLMSE=+0.0002
+[eval] wild: PSNR=26.0687, SSIM=0.9157, NCC=0.9547, LMSE=0.0042 | vs baseline: dPSNR=+0.8887, dSSIM=+0.0297, dNCC=+0.0188, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.1596, SSIM=+0.0064, NCC=+0.0056, LMSE=-0.0008
+[eval] selection score (mean relative PSNR/SSIM): +0.006763
+Epoch: 15
+saving the latest model at the end of epoch 16, iters 235712
+Time Taken: 1259 sec
+Reset Dataset...
+Epoch: 16
+saving the latest model at the end of epoch 17, iters 250444
+Time Taken: 1264 sec
+Reset Dataset...
+Epoch: 17
+saving the latest model at the end of epoch 18, iters 265176
+Time Taken: 1258 sec
+Reset Dataset...
+Epoch: 18
+saving the latest model at the end of epoch 19, iters 279908
+Time Taken: 1263 sec
+Reset Dataset...
+Epoch: 19
+saving the model at epoch 20, iters 294640
+saving the latest model at the end of epoch 20, iters 294640
+Time Taken: 1265 sec
+Reset Dataset...
+[i] full evaluation at epoch_20_end (epoch 20, iter 294640)
+[eval] ceilnet_table2: PSNR=28.2835, SSIM=0.9442, NCC=0.9836, LMSE=0.0039 | vs baseline: dPSNR=+0.4035, dSSIM=+0.0035, dNCC=+0.0028, dLMSE=-0.0009
+[eval] real20: PSNR=23.8350, SSIM=0.8271, NCC=0.8934, LMSE=0.0197 | vs baseline: dPSNR=+0.2850, dSSIM=-0.0014, dNCC=+0.0057, dLMSE=-0.0004
+[eval] objects: PSNR=24.5386, SSIM=0.8941, NCC=0.9833, LMSE=0.0035 | vs baseline: dPSNR=-0.3114, dSSIM=-0.0039, dNCC=+0.0016, dLMSE=+0.0006
+[eval] postcard: PSNR=22.7340, SSIM=0.8935, NCC=0.9532, LMSE=0.0046 | vs baseline: dPSNR=+0.6640, dSSIM=+0.0162, dNCC=+0.0069, dLMSE=+0.0002
+[eval] wild: PSNR=26.4228, SSIM=0.9186, NCC=0.9576, LMSE=0.0043 | vs baseline: dPSNR=+1.2428, dSSIM=+0.0326, dNCC=+0.0217, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.4568, SSIM=+0.0094, NCC=+0.0077, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.014645
+[eval] saved new best checkpoint: best_eval (score +0.014645)
+Epoch: 20
+saving the latest model at the end of epoch 21, iters 309372
+Time Taken: 1266 sec
+Reset Dataset...
+Epoch: 21
+saving the latest model at the end of epoch 22, iters 324104
+Time Taken: 1262 sec
+Reset Dataset...
+Epoch: 22
+saving the latest model at the end of epoch 23, iters 338836
+Time Taken: 1261 sec
+Reset Dataset...
+Epoch: 23
+saving the latest model at the end of epoch 24, iters 353568
+Time Taken: 1258 sec
+Reset Dataset...
+Epoch: 24
+saving the latest model at the end of epoch 25, iters 368300
+Time Taken: 1266 sec
+Reset Dataset...
+[i] full evaluation at epoch_25_end (epoch 25, iter 368300)
+[eval] ceilnet_table2: PSNR=27.8728, SSIM=0.9447, NCC=0.9835, LMSE=0.0040 | vs baseline: dPSNR=-0.0072, dSSIM=+0.0040, dNCC=+0.0027, dLMSE=-0.0008
+[eval] real20: PSNR=23.9097, SSIM=0.8303, NCC=0.9039, LMSE=0.0188 | vs baseline: dPSNR=+0.3597, dSSIM=+0.0018, dNCC=+0.0162, dLMSE=-0.0013
+[eval] objects: PSNR=24.6509, SSIM=0.8956, NCC=0.9840, LMSE=0.0035 | vs baseline: dPSNR=-0.1991, dSSIM=-0.0024, dNCC=+0.0023, dLMSE=+0.0006
+[eval] postcard: PSNR=22.7470, SSIM=0.8908, NCC=0.9515, LMSE=0.0048 | vs baseline: dPSNR=+0.6770, dSSIM=+0.0135, dNCC=+0.0052, dLMSE=+0.0004
+[eval] wild: PSNR=26.3448, SSIM=0.9186, NCC=0.9589, LMSE=0.0040 | vs baseline: dPSNR=+1.1648, dSSIM=+0.0326, dNCC=+0.0230, dLMSE=-0.0043
+[eval] mean metric deltas: PSNR=+0.3990, SSIM=+0.0099, NCC=+0.0099, LMSE=-0.0011
+[eval] selection score (mean relative PSNR/SSIM): +0.013985
+Epoch: 25
+saving the latest model at the end of epoch 26, iters 383032
+Time Taken: 1262 sec
+Reset Dataset...
+Epoch: 26
+saving the latest model at the end of epoch 27, iters 397764
+Time Taken: 1259 sec
+Reset Dataset...
+Epoch: 27
+saving the latest model at the end of epoch 28, iters 412496
+Time Taken: 1206 sec
+Reset Dataset...
+Epoch: 28
+saving the latest model at the end of epoch 29, iters 427228
+Time Taken: 1259 sec
+Reset Dataset...
+Epoch: 29
+saving the model at epoch 30, iters 441960
+saving the latest model at the end of epoch 30, iters 441960
+Time Taken: 1271 sec
+Reset Dataset...
+[i] full evaluation at epoch_30_end (epoch 30, iter 441960)
+[eval] ceilnet_table2: PSNR=28.7821, SSIM=0.9463, NCC=0.9840, LMSE=0.0040 | vs baseline: dPSNR=+0.9021, dSSIM=+0.0056, dNCC=+0.0032, dLMSE=-0.0008
+[eval] real20: PSNR=24.1135, SSIM=0.8337, NCC=0.9021, LMSE=0.0186 | vs baseline: dPSNR=+0.5635, dSSIM=+0.0052, dNCC=+0.0144, dLMSE=-0.0015
+[eval] objects: PSNR=24.3374, SSIM=0.8922, NCC=0.9827, LMSE=0.0038 | vs baseline: dPSNR=-0.5126, dSSIM=-0.0058, dNCC=+0.0010, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7530, SSIM=0.8889, NCC=0.9512, LMSE=0.0047 | vs baseline: dPSNR=+0.6830, dSSIM=+0.0116, dNCC=+0.0049, dLMSE=+0.0003
+[eval] wild: PSNR=26.2590, SSIM=0.9159, NCC=0.9539, LMSE=0.0049 | vs baseline: dPSNR=+1.0790, dSSIM=+0.0299, dNCC=+0.0180, dLMSE=-0.0034
+[eval] mean metric deltas: PSNR=+0.5430, SSIM=+0.0093, NCC=+0.0083, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.016232
+[eval] saved new best checkpoint: best_eval (score +0.016232)
+[i] set learning rate to 5e-06 (group0=5e-06)
+Epoch: 30
+saving the latest model at the end of epoch 31, iters 456692
+Time Taken: 1259 sec
+Reset Dataset...
+Epoch: 31
+saving the latest model at the end of epoch 32, iters 471424
+Time Taken: 1258 sec
+Reset Dataset...
+Epoch: 32
+saving the latest model at the end of epoch 33, iters 486156
+Time Taken: 1261 sec
+Reset Dataset...
+Epoch: 33
+saving the latest model at the end of epoch 34, iters 500888
+Time Taken: 962 sec
+Reset Dataset...
+Epoch: 34
+saving the latest model at the end of epoch 35, iters 515620
+Time Taken: 866 sec
+Reset Dataset...
+[i] full evaluation at epoch_35_end (epoch 35, iter 515620)
+[eval] ceilnet_table2: PSNR=28.7058, SSIM=0.9474, NCC=0.9846, LMSE=0.0038 | vs baseline: dPSNR=+0.8258, dSSIM=+0.0067, dNCC=+0.0038, dLMSE=-0.0010
+[eval] real20: PSNR=23.8739, SSIM=0.8275, NCC=0.8977, LMSE=0.0194 | vs baseline: dPSNR=+0.3239, dSSIM=-0.0010, dNCC=+0.0100, dLMSE=-0.0007
+[eval] objects: PSNR=24.2635, SSIM=0.8907, NCC=0.9828, LMSE=0.0038 | vs baseline: dPSNR=-0.5865, dSSIM=-0.0073, dNCC=+0.0011, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7499, SSIM=0.8916, NCC=0.9529, LMSE=0.0047 | vs baseline: dPSNR=+0.6799, dSSIM=+0.0143, dNCC=+0.0066, dLMSE=+0.0003
+[eval] wild: PSNR=26.2138, SSIM=0.9156, NCC=0.9556, LMSE=0.0046 | vs baseline: dPSNR=+1.0338, dSSIM=+0.0296, dNCC=+0.0197, dLMSE=-0.0037
+[eval] mean metric deltas: PSNR=+0.4554, SSIM=+0.0084, NCC=+0.0082, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.013903
+Epoch: 35
+saving the latest model at the end of epoch 36, iters 530352
+Time Taken: 874 sec
+Reset Dataset...
+Epoch: 36
+saving the latest model at the end of epoch 37, iters 545084
+Time Taken: 873 sec
+Reset Dataset...
+Epoch: 37
+saving the latest model at the end of epoch 38, iters 559816
+Time Taken: 884 sec
+Reset Dataset...
+Epoch: 38
+saving the latest model at the end of epoch 39, iters 574548
+Time Taken: 870 sec
+Reset Dataset...
+Epoch: 39
+saving the model at epoch 40, iters 589280
+saving the latest model at the end of epoch 40, iters 589280
+Time Taken: 869 sec
+Reset Dataset...
+[i] full evaluation at epoch_40_end (epoch 40, iter 589280)
+[eval] ceilnet_table2: PSNR=28.6115, SSIM=0.9469, NCC=0.9846, LMSE=0.0038 | vs baseline: dPSNR=+0.7315, dSSIM=+0.0062, dNCC=+0.0038, dLMSE=-0.0010
+[eval] real20: PSNR=24.1226, SSIM=0.8298, NCC=0.8993, LMSE=0.0192 | vs baseline: dPSNR=+0.5726, dSSIM=+0.0013, dNCC=+0.0116, dLMSE=-0.0009
+[eval] objects: PSNR=24.1667, SSIM=0.8886, NCC=0.9824, LMSE=0.0039 | vs baseline: dPSNR=-0.6833, dSSIM=-0.0094, dNCC=+0.0007, dLMSE=+0.0010
+[eval] postcard: PSNR=22.5445, SSIM=0.8915, NCC=0.9517, LMSE=0.0048 | vs baseline: dPSNR=+0.4745, dSSIM=+0.0142, dNCC=+0.0054, dLMSE=+0.0004
+[eval] wild: PSNR=25.9767, SSIM=0.9141, NCC=0.9562, LMSE=0.0044 | vs baseline: dPSNR=+0.7967, dSSIM=+0.0281, dNCC=+0.0203, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=+0.3784, SSIM=+0.0081, NCC=+0.0084, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.012182
+[i] set learning rate to 1.0000000000000002e-06 (group0=1e-06)
+Epoch: 40
+saving the latest model at the end of epoch 41, iters 604012
+Time Taken: 830 sec
+Reset Dataset...
+Epoch: 41
+saving the latest model at the end of epoch 42, iters 618744
+Time Taken: 832 sec
+Reset Dataset...
+Epoch: 42
+saving the latest model at the end of epoch 43, iters 633476
+Time Taken: 841 sec
+Reset Dataset...
+Epoch: 43
+saving the latest model at the end of epoch 44, iters 648208
+Time Taken: 875 sec
+Reset Dataset...
+Epoch: 44
+saving the latest model at the end of epoch 45, iters 662940
+Time Taken: 859 sec
+Reset Dataset...
+[i] full evaluation at epoch_45_end (epoch 45, iter 662940)
+[eval] ceilnet_table2: PSNR=28.7026, SSIM=0.9477, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+0.8226, dSSIM=+0.0070, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=23.9280, SSIM=0.8282, NCC=0.8989, LMSE=0.0192 | vs baseline: dPSNR=+0.3780, dSSIM=-0.0003, dNCC=+0.0112, dLMSE=-0.0009
+[eval] objects: PSNR=24.1623, SSIM=0.8891, NCC=0.9826, LMSE=0.0038 | vs baseline: dPSNR=-0.6877, dSSIM=-0.0089, dNCC=+0.0009, dLMSE=+0.0009
+[eval] postcard: PSNR=22.5513, SSIM=0.8900, NCC=0.9516, LMSE=0.0049 | vs baseline: dPSNR=+0.4813, dSSIM=+0.0127, dNCC=+0.0053, dLMSE=+0.0005
+[eval] wild: PSNR=26.1451, SSIM=0.9159, NCC=0.9576, LMSE=0.0043 | vs baseline: dPSNR=+0.9651, dSSIM=+0.0299, dNCC=+0.0217, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.3919, SSIM=+0.0081, NCC=+0.0087, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.012352
+[i] adjust fusion ratio to [0.325, 0.325, 0.25, 0.1]
+[i] set learning rate to 5e-06 (group0=5e-06)
+Epoch: 45
+saving the latest model at the end of epoch 46, iters 677672
+Time Taken: 865 sec
+Reset Dataset...
+Epoch: 46
+saving the latest model at the end of epoch 47, iters 692404
+Time Taken: 868 sec
+Reset Dataset...
+Epoch: 47
+saving the latest model at the end of epoch 48, iters 707136
+Time Taken: 870 sec
+Reset Dataset...
+Epoch: 48
+saving the latest model at the end of epoch 49, iters 721868
+Time Taken: 874 sec
+Reset Dataset...
+Epoch: 49
+saving the model at epoch 50, iters 736600
+saving the latest model at the end of epoch 50, iters 736600
+Time Taken: 843 sec
+Reset Dataset...
+[i] full evaluation at epoch_50_end (epoch 50, iter 736600)
+[eval] ceilnet_table2: PSNR=28.7385, SSIM=0.9475, NCC=0.9845, LMSE=0.0039 | vs baseline: dPSNR=+0.8585, dSSIM=+0.0068, dNCC=+0.0037, dLMSE=-0.0009
+[eval] real20: PSNR=24.1264, SSIM=0.8319, NCC=0.9024, LMSE=0.0187 | vs baseline: dPSNR=+0.5764, dSSIM=+0.0034, dNCC=+0.0147, dLMSE=-0.0014
+[eval] objects: PSNR=24.2082, SSIM=0.8889, NCC=0.9828, LMSE=0.0037 | vs baseline: dPSNR=-0.6418, dSSIM=-0.0091, dNCC=+0.0011, dLMSE=+0.0008
+[eval] postcard: PSNR=22.5983, SSIM=0.8847, NCC=0.9508, LMSE=0.0050 | vs baseline: dPSNR=+0.5283, dSSIM=+0.0074, dNCC=+0.0045, dLMSE=+0.0006
+[eval] wild: PSNR=26.2417, SSIM=0.9155, NCC=0.9581, LMSE=0.0041 | vs baseline: dPSNR=+1.0617, dSSIM=+0.0295, dNCC=+0.0222, dLMSE=-0.0042
+[eval] mean metric deltas: PSNR=+0.4766, SSIM=+0.0076, NCC=+0.0092, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.013851
+[i] set learning rate to 1.0000000000000002e-06 (group0=1e-06)
+Epoch: 50
+saving the latest model at the end of epoch 51, iters 751332
+Time Taken: 870 sec
+Reset Dataset...
+[i] full evaluation at epoch_51_end (epoch 51, iter 751332)
+[eval] ceilnet_table2: PSNR=28.7760, SSIM=0.9477, NCC=0.9849, LMSE=0.0038 | vs baseline: dPSNR=+0.8960, dSSIM=+0.0070, dNCC=+0.0041, dLMSE=-0.0010
+[eval] real20: PSNR=23.9890, SSIM=0.8291, NCC=0.9001, LMSE=0.0191 | vs baseline: dPSNR=+0.4390, dSSIM=+0.0006, dNCC=+0.0124, dLMSE=-0.0010
+[eval] objects: PSNR=24.1381, SSIM=0.8885, NCC=0.9826, LMSE=0.0039 | vs baseline: dPSNR=-0.7119, dSSIM=-0.0095, dNCC=+0.0009, dLMSE=+0.0010
+[eval] postcard: PSNR=22.6786, SSIM=0.8886, NCC=0.9516, LMSE=0.0050 | vs baseline: dPSNR=+0.6086, dSSIM=+0.0113, dNCC=+0.0053, dLMSE=+0.0006
+[eval] wild: PSNR=26.1802, SSIM=0.9156, NCC=0.9580, LMSE=0.0042 | vs baseline: dPSNR=+1.0002, dSSIM=+0.0296, dNCC=+0.0221, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.4464, SSIM=+0.0078, NCC=+0.0090, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.013337
+Epoch: 51
+saving the latest model at the end of epoch 52, iters 766064
+Time Taken: 865 sec
+Reset Dataset...
+[i] full evaluation at epoch_52_end (epoch 52, iter 766064)
+[eval] ceilnet_table2: PSNR=28.7874, SSIM=0.9479, NCC=0.9849, LMSE=0.0038 | vs baseline: dPSNR=+0.9074, dSSIM=+0.0072, dNCC=+0.0041, dLMSE=-0.0010
+[eval] real20: PSNR=24.0460, SSIM=0.8301, NCC=0.9023, LMSE=0.0190 | vs baseline: dPSNR=+0.4960, dSSIM=+0.0016, dNCC=+0.0146, dLMSE=-0.0011
+[eval] objects: PSNR=24.1666, SSIM=0.8886, NCC=0.9828, LMSE=0.0038 | vs baseline: dPSNR=-0.6834, dSSIM=-0.0094, dNCC=+0.0011, dLMSE=+0.0009
+[eval] postcard: PSNR=22.6318, SSIM=0.8894, NCC=0.9522, LMSE=0.0049 | vs baseline: dPSNR=+0.5618, dSSIM=+0.0121, dNCC=+0.0059, dLMSE=+0.0005
+[eval] wild: PSNR=26.2156, SSIM=0.9158, NCC=0.9578, LMSE=0.0042 | vs baseline: dPSNR=+1.0356, dSSIM=+0.0298, dNCC=+0.0219, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.4635, SSIM=+0.0083, NCC=+0.0095, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.013929
+Epoch: 52
+saving the latest model at the end of epoch 53, iters 780796
+Time Taken: 854 sec
+Reset Dataset...
+[i] full evaluation at epoch_53_end (epoch 53, iter 780796)
+[eval] ceilnet_table2: PSNR=28.8882, SSIM=0.9481, NCC=0.9849, LMSE=0.0038 | vs baseline: dPSNR=+1.0082, dSSIM=+0.0074, dNCC=+0.0041, dLMSE=-0.0010
+[eval] real20: PSNR=24.0891, SSIM=0.8303, NCC=0.9006, LMSE=0.0188 | vs baseline: dPSNR=+0.5391, dSSIM=+0.0018, dNCC=+0.0129, dLMSE=-0.0013
+[eval] objects: PSNR=24.2648, SSIM=0.8899, NCC=0.9827, LMSE=0.0037 | vs baseline: dPSNR=-0.5852, dSSIM=-0.0081, dNCC=+0.0010, dLMSE=+0.0008
+[eval] postcard: PSNR=22.6483, SSIM=0.8896, NCC=0.9521, LMSE=0.0049 | vs baseline: dPSNR=+0.5783, dSSIM=+0.0123, dNCC=+0.0058, dLMSE=+0.0005
+[eval] wild: PSNR=26.2422, SSIM=0.9160, NCC=0.9575, LMSE=0.0042 | vs baseline: dPSNR=+1.0622, dSSIM=+0.0300, dNCC=+0.0216, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.5205, SSIM=+0.0087, NCC=+0.0091, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.015290
+Epoch: 53
+saving the latest model at the end of epoch 54, iters 795528
+Time Taken: 874 sec
+Reset Dataset...
+[i] full evaluation at epoch_54_end (epoch 54, iter 795528)
+[eval] ceilnet_table2: PSNR=28.8010, SSIM=0.9481, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+0.9210, dSSIM=+0.0074, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=24.0284, SSIM=0.8300, NCC=0.9000, LMSE=0.0192 | vs baseline: dPSNR=+0.4784, dSSIM=+0.0015, dNCC=+0.0123, dLMSE=-0.0009
+[eval] objects: PSNR=24.2366, SSIM=0.8900, NCC=0.9828, LMSE=0.0038 | vs baseline: dPSNR=-0.6134, dSSIM=-0.0080, dNCC=+0.0011, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7728, SSIM=0.8886, NCC=0.9517, LMSE=0.0050 | vs baseline: dPSNR=+0.7028, dSSIM=+0.0113, dNCC=+0.0054, dLMSE=+0.0006
+[eval] wild: PSNR=26.3035, SSIM=0.9168, NCC=0.9579, LMSE=0.0043 | vs baseline: dPSNR=+1.1235, dSSIM=+0.0308, dNCC=+0.0220, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5225, SSIM=+0.0086, NCC=+0.0090, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.015350
+Epoch: 54
+saving the latest model at the end of epoch 55, iters 810260
+Time Taken: 861 sec
+Reset Dataset...
+[i] full evaluation at epoch_55_end (epoch 55, iter 810260)
+[eval] ceilnet_table2: PSNR=28.7639, SSIM=0.9478, NCC=0.9851, LMSE=0.0037 | vs baseline: dPSNR=+0.8839, dSSIM=+0.0071, dNCC=+0.0043, dLMSE=-0.0011
+[eval] real20: PSNR=24.0993, SSIM=0.8312, NCC=0.9021, LMSE=0.0187 | vs baseline: dPSNR=+0.5493, dSSIM=+0.0027, dNCC=+0.0144, dLMSE=-0.0014
+[eval] objects: PSNR=24.2438, SSIM=0.8898, NCC=0.9829, LMSE=0.0038 | vs baseline: dPSNR=-0.6062, dSSIM=-0.0082, dNCC=+0.0012, dLMSE=+0.0009
+[eval] postcard: PSNR=22.6807, SSIM=0.8895, NCC=0.9521, LMSE=0.0049 | vs baseline: dPSNR=+0.6107, dSSIM=+0.0122, dNCC=+0.0058, dLMSE=+0.0005
+[eval] wild: PSNR=26.2081, SSIM=0.9160, NCC=0.9570, LMSE=0.0042 | vs baseline: dPSNR=+1.0281, dSSIM=+0.0300, dNCC=+0.0211, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.4931, SSIM=+0.0088, NCC=+0.0094, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.014853
+Epoch: 55
+saving the latest model at the end of epoch 56, iters 824992
+Time Taken: 875 sec
+Reset Dataset...
+[i] full evaluation at epoch_56_end (epoch 56, iter 824992)
+[eval] ceilnet_table2: PSNR=28.8544, SSIM=0.9480, NCC=0.9850, LMSE=0.0037 | vs baseline: dPSNR=+0.9744, dSSIM=+0.0073, dNCC=+0.0042, dLMSE=-0.0011
+[eval] real20: PSNR=24.0402, SSIM=0.8311, NCC=0.9014, LMSE=0.0190 | vs baseline: dPSNR=+0.4902, dSSIM=+0.0026, dNCC=+0.0137, dLMSE=-0.0011
+[eval] objects: PSNR=24.2820, SSIM=0.8903, NCC=0.9827, LMSE=0.0037 | vs baseline: dPSNR=-0.5680, dSSIM=-0.0077, dNCC=+0.0010, dLMSE=+0.0008
+[eval] postcard: PSNR=22.6852, SSIM=0.8872, NCC=0.9512, LMSE=0.0050 | vs baseline: dPSNR=+0.6152, dSSIM=+0.0099, dNCC=+0.0049, dLMSE=+0.0006
+[eval] wild: PSNR=26.2882, SSIM=0.9166, NCC=0.9569, LMSE=0.0043 | vs baseline: dPSNR=+1.1082, dSSIM=+0.0306, dNCC=+0.0210, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5240, SSIM=+0.0085, NCC=+0.0090, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.015287
+Epoch: 56
+saving the latest model at the end of epoch 57, iters 839724
+Time Taken: 869 sec
+Reset Dataset...
+[i] full evaluation at epoch_57_end (epoch 57, iter 839724)
+[eval] ceilnet_table2: PSNR=28.8012, SSIM=0.9478, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+0.9212, dSSIM=+0.0071, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=24.1009, SSIM=0.8303, NCC=0.9018, LMSE=0.0188 | vs baseline: dPSNR=+0.5509, dSSIM=+0.0018, dNCC=+0.0141, dLMSE=-0.0013
+[eval] objects: PSNR=24.1792, SSIM=0.8888, NCC=0.9829, LMSE=0.0038 | vs baseline: dPSNR=-0.6708, dSSIM=-0.0092, dNCC=+0.0012, dLMSE=+0.0009
+[eval] postcard: PSNR=22.5938, SSIM=0.8893, NCC=0.9520, LMSE=0.0049 | vs baseline: dPSNR=+0.5238, dSSIM=+0.0120, dNCC=+0.0057, dLMSE=+0.0005
+[eval] wild: PSNR=26.2047, SSIM=0.9159, NCC=0.9576, LMSE=0.0042 | vs baseline: dPSNR=+1.0247, dSSIM=+0.0299, dNCC=+0.0217, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.4700, SSIM=+0.0083, NCC=+0.0094, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.014079
+Epoch: 57
+saving the latest model at the end of epoch 58, iters 854456
+Time Taken: 848 sec
+Reset Dataset...
+[i] full evaluation at epoch_58_end (epoch 58, iter 854456)
+[eval] ceilnet_table2: PSNR=28.8790, SSIM=0.9479, NCC=0.9851, LMSE=0.0038 | vs baseline: dPSNR=+0.9990, dSSIM=+0.0072, dNCC=+0.0043, dLMSE=-0.0010
+[eval] real20: PSNR=24.0540, SSIM=0.8300, NCC=0.9014, LMSE=0.0190 | vs baseline: dPSNR=+0.5040, dSSIM=+0.0015, dNCC=+0.0137, dLMSE=-0.0011
+[eval] objects: PSNR=24.1888, SSIM=0.8890, NCC=0.9828, LMSE=0.0038 | vs baseline: dPSNR=-0.6612, dSSIM=-0.0090, dNCC=+0.0011, dLMSE=+0.0009
+[eval] postcard: PSNR=22.6855, SSIM=0.8884, NCC=0.9516, LMSE=0.0050 | vs baseline: dPSNR=+0.6155, dSSIM=+0.0111, dNCC=+0.0053, dLMSE=+0.0006
+[eval] wild: PSNR=26.2256, SSIM=0.9154, NCC=0.9570, LMSE=0.0043 | vs baseline: dPSNR=+1.0456, dSSIM=+0.0294, dNCC=+0.0211, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5006, SSIM=+0.0081, NCC=+0.0091, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.014538
+Epoch: 58
+saving the latest model at the end of epoch 59, iters 869188
+Time Taken: 869 sec
+Reset Dataset...
+[i] full evaluation at epoch_59_end (epoch 59, iter 869188)
+[eval] ceilnet_table2: PSNR=28.9882, SSIM=0.9481, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+1.1082, dSSIM=+0.0074, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=24.0481, SSIM=0.8301, NCC=0.9002, LMSE=0.0190 | vs baseline: dPSNR=+0.4981, dSSIM=+0.0016, dNCC=+0.0125, dLMSE=-0.0011
+[eval] objects: PSNR=24.2739, SSIM=0.8901, NCC=0.9828, LMSE=0.0038 | vs baseline: dPSNR=-0.5761, dSSIM=-0.0079, dNCC=+0.0011, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7433, SSIM=0.8869, NCC=0.9511, LMSE=0.0050 | vs baseline: dPSNR=+0.6733, dSSIM=+0.0096, dNCC=+0.0048, dLMSE=+0.0006
+[eval] wild: PSNR=26.3051, SSIM=0.9163, NCC=0.9574, LMSE=0.0043 | vs baseline: dPSNR=+1.1251, dSSIM=+0.0303, dNCC=+0.0215, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5657, SSIM=+0.0082, NCC=+0.0088, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.015902
+Epoch: 59
+saving the model at epoch 60, iters 883920
+saving the latest model at the end of epoch 60, iters 883920
+Time Taken: 878 sec
+Reset Dataset...
+[i] full evaluation at epoch_60_end (epoch 60, iter 883920)
+[eval] ceilnet_table2: PSNR=28.9577, SSIM=0.9485, NCC=0.9851, LMSE=0.0038 | vs baseline: dPSNR=+1.0777, dSSIM=+0.0078, dNCC=+0.0043, dLMSE=-0.0010
+[eval] real20: PSNR=24.1042, SSIM=0.8302, NCC=0.8993, LMSE=0.0190 | vs baseline: dPSNR=+0.5542, dSSIM=+0.0017, dNCC=+0.0116, dLMSE=-0.0011
+[eval] objects: PSNR=24.2839, SSIM=0.8902, NCC=0.9829, LMSE=0.0037 | vs baseline: dPSNR=-0.5661, dSSIM=-0.0078, dNCC=+0.0012, dLMSE=+0.0008
+[eval] postcard: PSNR=22.7391, SSIM=0.8891, NCC=0.9520, LMSE=0.0050 | vs baseline: dPSNR=+0.6691, dSSIM=+0.0118, dNCC=+0.0057, dLMSE=+0.0006
+[eval] wild: PSNR=26.3277, SSIM=0.9172, NCC=0.9569, LMSE=0.0043 | vs baseline: dPSNR=+1.1477, dSSIM=+0.0312, dNCC=+0.0210, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5765, SSIM=+0.0089, NCC=+0.0088, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.016553
+[eval] saved new best checkpoint: best_eval (score +0.016553)
+Epoch: 60
+saving the latest model at the end of epoch 61, iters 898652
+Time Taken: 873 sec
+Reset Dataset...
+[i] full evaluation at epoch_61_end (epoch 61, iter 898652)
+[eval] ceilnet_table2: PSNR=28.7197, SSIM=0.9475, NCC=0.9850, LMSE=0.0037 | vs baseline: dPSNR=+0.8397, dSSIM=+0.0068, dNCC=+0.0042, dLMSE=-0.0011
+[eval] real20: PSNR=24.0973, SSIM=0.8306, NCC=0.9008, LMSE=0.0189 | vs baseline: dPSNR=+0.5473, dSSIM=+0.0021, dNCC=+0.0131, dLMSE=-0.0012
+[eval] objects: PSNR=24.1425, SSIM=0.8885, NCC=0.9829, LMSE=0.0038 | vs baseline: dPSNR=-0.7075, dSSIM=-0.0095, dNCC=+0.0012, dLMSE=+0.0009
+[eval] postcard: PSNR=22.5381, SSIM=0.8894, NCC=0.9522, LMSE=0.0048 | vs baseline: dPSNR=+0.4681, dSSIM=+0.0121, dNCC=+0.0059, dLMSE=+0.0004
+[eval] wild: PSNR=26.1191, SSIM=0.9154, NCC=0.9567, LMSE=0.0043 | vs baseline: dPSNR=+0.9391, dSSIM=+0.0294, dNCC=+0.0208, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.4173, SSIM=+0.0082, NCC=+0.0090, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.012959
+Epoch: 61
+saving the latest model at the end of epoch 62, iters 913384
+Time Taken: 854 sec
+Reset Dataset...
+[i] full evaluation at epoch_62_end (epoch 62, iter 913384)
+[eval] ceilnet_table2: PSNR=28.8455, SSIM=0.9483, NCC=0.9851, LMSE=0.0038 | vs baseline: dPSNR=+0.9655, dSSIM=+0.0076, dNCC=+0.0043, dLMSE=-0.0010
+[eval] real20: PSNR=24.0770, SSIM=0.8305, NCC=0.9003, LMSE=0.0190 | vs baseline: dPSNR=+0.5270, dSSIM=+0.0020, dNCC=+0.0126, dLMSE=-0.0011
+[eval] objects: PSNR=24.2523, SSIM=0.8902, NCC=0.9827, LMSE=0.0038 | vs baseline: dPSNR=-0.5977, dSSIM=-0.0078, dNCC=+0.0010, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7592, SSIM=0.8888, NCC=0.9519, LMSE=0.0050 | vs baseline: dPSNR=+0.6892, dSSIM=+0.0115, dNCC=+0.0056, dLMSE=+0.0006
+[eval] wild: PSNR=26.1560, SSIM=0.9160, NCC=0.9562, LMSE=0.0045 | vs baseline: dPSNR=+0.9760, dSSIM=+0.0300, dNCC=+0.0203, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=+0.5120, SSIM=+0.0087, NCC=+0.0088, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.015167
+Epoch: 62
+saving the latest model at the end of epoch 63, iters 928116
+Time Taken: 884 sec
+Reset Dataset...
+[i] full evaluation at epoch_63_end (epoch 63, iter 928116)
+[eval] ceilnet_table2: PSNR=28.8699, SSIM=0.9483, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+0.9899, dSSIM=+0.0076, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=24.0052, SSIM=0.8294, NCC=0.8995, LMSE=0.0190 | vs baseline: dPSNR=+0.4552, dSSIM=+0.0009, dNCC=+0.0118, dLMSE=-0.0011
+[eval] objects: PSNR=24.2052, SSIM=0.8891, NCC=0.9827, LMSE=0.0038 | vs baseline: dPSNR=-0.6448, dSSIM=-0.0089, dNCC=+0.0010, dLMSE=+0.0009
+[eval] postcard: PSNR=22.7557, SSIM=0.8888, NCC=0.9520, LMSE=0.0049 | vs baseline: dPSNR=+0.6857, dSSIM=+0.0115, dNCC=+0.0057, dLMSE=+0.0005
+[eval] wild: PSNR=26.2590, SSIM=0.9162, NCC=0.9577, LMSE=0.0042 | vs baseline: dPSNR=+1.0790, dSSIM=+0.0302, dNCC=+0.0218, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.5130, SSIM=+0.0083, NCC=+0.0089, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.014936
+Epoch: 63
+saving the latest model at the end of epoch 64, iters 942848
+Time Taken: 877 sec
+Reset Dataset...
+[i] full evaluation at epoch_64_end (epoch 64, iter 942848)
+[eval] ceilnet_table2: PSNR=29.1326, SSIM=0.9487, NCC=0.9850, LMSE=0.0038 | vs baseline: dPSNR=+1.2526, dSSIM=+0.0080, dNCC=+0.0042, dLMSE=-0.0010
+[eval] real20: PSNR=24.0143, SSIM=0.8302, NCC=0.8998, LMSE=0.0189 | vs baseline: dPSNR=+0.4643, dSSIM=+0.0017, dNCC=+0.0121, dLMSE=-0.0012
+[eval] objects: PSNR=24.3838, SSIM=0.8916, NCC=0.9830, LMSE=0.0037 | vs baseline: dPSNR=-0.4662, dSSIM=-0.0064, dNCC=+0.0013, dLMSE=+0.0008
+[eval] postcard: PSNR=22.8401, SSIM=0.8897, NCC=0.9520, LMSE=0.0048 | vs baseline: dPSNR=+0.7701, dSSIM=+0.0124, dNCC=+0.0057, dLMSE=+0.0004
+[eval] wild: PSNR=26.4343, SSIM=0.9175, NCC=0.9575, LMSE=0.0043 | vs baseline: dPSNR=+1.2543, dSSIM=+0.0315, dNCC=+0.0216, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.6550, SSIM=+0.0095, NCC=+0.0090, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.018381
+[eval] saved new best checkpoint: best_eval (score +0.018381)
+Epoch: 64
+saving the latest model at the end of epoch 65, iters 957580
+Time Taken: 880 sec
+Reset Dataset...
+[i] full evaluation at epoch_65_end (epoch 65, iter 957580)
+[eval] ceilnet_table2: PSNR=29.1034, SSIM=0.9489, NCC=0.9852, LMSE=0.0038 | vs baseline: dPSNR=+1.2234, dSSIM=+0.0082, dNCC=+0.0044, dLMSE=-0.0010
+[eval] real20: PSNR=24.1007, SSIM=0.8312, NCC=0.9009, LMSE=0.0190 | vs baseline: dPSNR=+0.5507, dSSIM=+0.0027, dNCC=+0.0132, dLMSE=-0.0011
+[eval] objects: PSNR=24.3487, SSIM=0.8911, NCC=0.9828, LMSE=0.0037 | vs baseline: dPSNR=-0.5013, dSSIM=-0.0069, dNCC=+0.0011, dLMSE=+0.0008
+[eval] postcard: PSNR=22.6962, SSIM=0.8894, NCC=0.9519, LMSE=0.0049 | vs baseline: dPSNR=+0.6262, dSSIM=+0.0121, dNCC=+0.0056, dLMSE=+0.0005
+[eval] wild: PSNR=26.3232, SSIM=0.9167, NCC=0.9570, LMSE=0.0043 | vs baseline: dPSNR=+1.1432, dSSIM=+0.0307, dNCC=+0.0211, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.6084, SSIM=+0.0094, NCC=+0.0091, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.017361
+Epoch: 65
+saving the latest model at the end of epoch 66, iters 972312
+Time Taken: 879 sec
+Reset Dataset...
+[i] full evaluation at epoch_66_end (epoch 66, iter 972312)
+[eval] ceilnet_table2: PSNR=29.1207, SSIM=0.9490, NCC=0.9853, LMSE=0.0038 | vs baseline: dPSNR=+1.2407, dSSIM=+0.0083, dNCC=+0.0045, dLMSE=-0.0010
+[eval] real20: PSNR=24.0425, SSIM=0.8300, NCC=0.9002, LMSE=0.0190 | vs baseline: dPSNR=+0.4925, dSSIM=+0.0015, dNCC=+0.0125, dLMSE=-0.0011
+[eval] objects: PSNR=24.2997, SSIM=0.8904, NCC=0.9829, LMSE=0.0036 | vs baseline: dPSNR=-0.5503, dSSIM=-0.0076, dNCC=+0.0012, dLMSE=+0.0007
+[eval] postcard: PSNR=22.5632, SSIM=0.8878, NCC=0.9514, LMSE=0.0049 | vs baseline: dPSNR=+0.4932, dSSIM=+0.0105, dNCC=+0.0051, dLMSE=+0.0005
+[eval] wild: PSNR=26.3192, SSIM=0.9166, NCC=0.9576, LMSE=0.0042 | vs baseline: dPSNR=+1.1392, dSSIM=+0.0306, dNCC=+0.0217, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.5631, SSIM=+0.0087, NCC=+0.0090, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.015954
+Epoch: 66
+saving the latest model at the end of epoch 67, iters 987044
+Time Taken: 885 sec
+Reset Dataset...
+[i] full evaluation at epoch_67_end (epoch 67, iter 987044)
+[eval] ceilnet_table2: PSNR=28.9218, SSIM=0.9487, NCC=0.9852, LMSE=0.0037 | vs baseline: dPSNR=+1.0418, dSSIM=+0.0080, dNCC=+0.0044, dLMSE=-0.0011
+[eval] real20: PSNR=24.0672, SSIM=0.8315, NCC=0.9007, LMSE=0.0189 | vs baseline: dPSNR=+0.5172, dSSIM=+0.0030, dNCC=+0.0130, dLMSE=-0.0012
+[eval] objects: PSNR=24.3079, SSIM=0.8909, NCC=0.9827, LMSE=0.0037 | vs baseline: dPSNR=-0.5421, dSSIM=-0.0071, dNCC=+0.0010, dLMSE=+0.0008
+[eval] postcard: PSNR=22.7132, SSIM=0.8878, NCC=0.9513, LMSE=0.0050 | vs baseline: dPSNR=+0.6432, dSSIM=+0.0105, dNCC=+0.0050, dLMSE=+0.0006
+[eval] wild: PSNR=26.2797, SSIM=0.9166, NCC=0.9559, LMSE=0.0044 | vs baseline: dPSNR=+1.0997, dSSIM=+0.0306, dNCC=+0.0200, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=+0.5520, SSIM=+0.0090, NCC=+0.0087, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.016103
+Epoch: 67
+saving the latest model at the end of epoch 68, iters 1001776
+Time Taken: 879 sec
+Reset Dataset...
+[i] full evaluation at epoch_68_end (epoch 68, iter 1001776)
+[eval] ceilnet_table2: PSNR=28.8628, SSIM=0.9484, NCC=0.9849, LMSE=0.0038 | vs baseline: dPSNR=+0.9828, dSSIM=+0.0077, dNCC=+0.0041, dLMSE=-0.0010
+[eval] real20: PSNR=23.9098, SSIM=0.8301, NCC=0.8993, LMSE=0.0191 | vs baseline: dPSNR=+0.3598, dSSIM=+0.0016, dNCC=+0.0116, dLMSE=-0.0010
+[eval] objects: PSNR=24.2719, SSIM=0.8920, NCC=0.9815, LMSE=0.0040 | vs baseline: dPSNR=-0.5781, dSSIM=-0.0060, dNCC=-0.0002, dLMSE=+0.0011
+[eval] postcard: PSNR=22.8705, SSIM=0.8884, NCC=0.9515, LMSE=0.0049 | vs baseline: dPSNR=+0.8005, dSSIM=+0.0111, dNCC=+0.0052, dLMSE=+0.0005
+[eval] wild: PSNR=26.1682, SSIM=0.9161, NCC=0.9563, LMSE=0.0045 | vs baseline: dPSNR=+0.9882, dSSIM=+0.0301, dNCC=+0.0204, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=+0.5106, SSIM=+0.0089, NCC=+0.0083, LMSE=-0.0008
+[eval] selection score (mean relative PSNR/SSIM): +0.015289
+Epoch: 68
+saving the latest model at the end of epoch 69, iters 1016508
+Time Taken: 868 sec
+Reset Dataset...
+[i] full evaluation at epoch_69_end (epoch 69, iter 1016508)
+[eval] ceilnet_table2: PSNR=28.8549, SSIM=0.9480, NCC=0.9850, LMSE=0.0037 | vs baseline: dPSNR=+0.9749, dSSIM=+0.0073, dNCC=+0.0042, dLMSE=-0.0011
+[eval] real20: PSNR=24.0769, SSIM=0.8314, NCC=0.9008, LMSE=0.0188 | vs baseline: dPSNR=+0.5269, dSSIM=+0.0029, dNCC=+0.0131, dLMSE=-0.0013
+[eval] objects: PSNR=24.3306, SSIM=0.8909, NCC=0.9829, LMSE=0.0037 | vs baseline: dPSNR=-0.5194, dSSIM=-0.0071, dNCC=+0.0012, dLMSE=+0.0008
+[eval] postcard: PSNR=22.7566, SSIM=0.8897, NCC=0.9523, LMSE=0.0048 | vs baseline: dPSNR=+0.6866, dSSIM=+0.0124, dNCC=+0.0060, dLMSE=+0.0004
+[eval] wild: PSNR=26.2989, SSIM=0.9162, NCC=0.9571, LMSE=0.0043 | vs baseline: dPSNR=+1.1189, dSSIM=+0.0302, dNCC=+0.0212, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=+0.5576, SSIM=+0.0091, NCC=+0.0091, LMSE=-0.0010
+[eval] selection score (mean relative PSNR/SSIM): +0.016347
+Epoch: 69
+saving the model at epoch 70, iters 1031240
+saving the latest model at the end of epoch 70, iters 1031240
+Time Taken: 875 sec
+Reset Dataset...
+[i] full evaluation at epoch_70_end (epoch 70, iter 1031240)
+[eval] ceilnet_table2: PSNR=28.8197, SSIM=0.9483, NCC=0.9851, LMSE=0.0037 | vs baseline: dPSNR=+0.9397, dSSIM=+0.0076, dNCC=+0.0043, dLMSE=-0.0011
+[eval] real20: PSNR=24.0552, SSIM=0.8300, NCC=0.9003, LMSE=0.0191 | vs baseline: dPSNR=+0.5052, dSSIM=+0.0015, dNCC=+0.0126, dLMSE=-0.0010
+[eval] objects: PSNR=24.2843, SSIM=0.8905, NCC=0.9829, LMSE=0.0037 | vs baseline: dPSNR=-0.5657, dSSIM=-0.0075, dNCC=+0.0012, dLMSE=+0.0008
+[eval] postcard: PSNR=22.6868, SSIM=0.8890, NCC=0.9518, LMSE=0.0050 | vs baseline: dPSNR=+0.6168, dSSIM=+0.0117, dNCC=+0.0055, dLMSE=+0.0006
+[eval] wild: PSNR=26.2790, SSIM=0.9167, NCC=0.9577, LMSE=0.0042 | vs baseline: dPSNR=+1.0990, dSSIM=+0.0307, dNCC=+0.0218, dLMSE=-0.0041
+[eval] mean metric deltas: PSNR=+0.5190, SSIM=+0.0088, NCC=+0.0091, LMSE=-0.0009
+[eval] selection score (mean relative PSNR/SSIM): +0.015352

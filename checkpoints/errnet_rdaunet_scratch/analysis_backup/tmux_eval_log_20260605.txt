@@ -1,0 +1,1759 @@
+root@bitahub-a19991981350187008354918:~/ERRNet# bash scripts/train_rdaunet_scratch.sh
+------------ Options -------------
+batchSize: 1
+checkpoints_dir: ./checkpoints
+debug: False
+display_freq: 100
+display_id: 0
+display_port: 8097
+display_single_pane_ncols: 0
+display_winsize: 256
+fineSize: 224,224
+gan_type: rasgan
+gpu_ids: [0]
+high_gamma: 1.3
+high_sigma: 5
+hyper: True
+icnn_path: None
+inet: rdaunet
+init_type: edsr
+isTrain: True
+lambda_charbonnier: 0.2
+lambda_gan: 0.0
+lambda_gradient: 0.15
+lambda_laplacian: 0.02
+lambda_mse: 1.0
+lambda_ssim: 0.05
+lambda_vgg: 0.1
+loadSize: 224,336,448
+loss_profile: structure
+low_gamma: 1.3
+low_sigma: 2
+lr: 0.0001
+max_dataset_size: None
+model: errnet_model
+nEpochs: 70
+nThreads: 8
+name: errnet_rdaunet_scratch
+no_flip: False
+no_html: False
+no_log: False
+no_reflection_aug: False
+no_save_best_eval: False
+no_train_eval: False
+no_verbose: False
+print_freq: 100
+reflection_alpha_high: 1.0
+reflection_alpha_low: 0.5
+reflection_color_jitter: 0.03
+reflection_jpeg_prob: 0.0
+reflection_jpeg_quality_high: 95
+reflection_jpeg_quality_low: 55
+reflection_noise_std: 0.0
+reflection_shift: 3
+resize_or_crop: resize_and_crop
+resume: False
+resume_epoch: None
+save_epoch_freq: 10
+seed: 2018
+serial_batches: False
+syn_kernel_sizes: 7,9,11,15,21
+train_eval_datasets: ceilnet_table2,real20,objects,postcard,wild
+train_eval_epoch_schedule: 5:50,1:70
+train_eval_interval_epochs: 0.5
+transmission_alpha_high: 1.0
+transmission_alpha_low: 0.92
+unaligned_loss: vgg
+update_html_freq: 1000
+vgg_layer: 31
+wd: 0
+which_model_D: disc_vgg
+-------------- End ----------------
+[i] reflection sythesis model: {'kernel_sizes': [7, 9, 11, 15, 21], 'low_sigma': 2, 'high_sigma': 5, 'low
+_gamma': 1.3, 'high_gamma': 1.3, 'enhanced': True, 'reflection_alpha': (0.5, 1.0), 'transmission_alpha':
+(0.92, 1.0), 'color_jitter': 0.03, 'shift': 3, 'noise_std': 0.0, 'jpeg_prob': 0.0, 'jpeg_quality': (55, 9
+5)}
+[i] using a fusion dataset: 7732 [7643, 89] imgs fused with ratio [0.7, 0.3]
+[i] initialization method [edsr]
+[i] initialization method [kaiming]
+--------------------- Model ---------------------
+##################### NetG #####################
+RDAUNet(
+  (stem): Sequential(
+    (0): Conv2d(1475, 64, kernel_size=(1, 1), stride=(1, 1))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (3): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (edge_proj): Sequential(
+    (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  )
+  (enc1): RDABlockStack(
+    (0): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+    (1): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+  )
+  (down1): DownsampleBlock(
+    (body): Sequential(
+      (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+  )
+  (enc2): RDABlockStack(
+    (0): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(192, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(224, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(128, 16, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(16, 128, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+    (1): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(192, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(224, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(128, 16, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(16, 128, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+  )
+  (down2): DownsampleBlock(
+    (body): Sequential(
+      (0): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+  )
+  (bottleneck): Sequential(
+    (0): RDABlockStack(
+      (0): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+      (1): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+      (2): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+      (3): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+    )
+    (1): ASPPContext(
+      (branches): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2), dilation=(2, 2))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(4, 4), dilation=(4, 4))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(8, 8), dilation=(8, 8))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (global_branch): Sequential(
+        (0): AdaptiveAvgPool2d(output_size=1)
+        (1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+        (2): LeakyReLU(negative_slope=0.2, inplace=True)
+      )
+      (fuse): Sequential(
+        (0): Conv2d(640, 256, kernel_size=(1, 1), stride=(1, 1))
+        (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        (2): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+    )
+    (2): RDABlockStack(
+      (0): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+      (1): ResidualDenseAttentionBlock(
+        (layers): ModuleList(
+          (0): Sequential(
+            (0): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (1): Sequential(
+            (0): Conv2d(288, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (2): Sequential(
+            (0): Conv2d(320, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+          (3): Sequential(
+            (0): Conv2d(352, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (1): LeakyReLU(negative_slope=0.2, inplace=True)
+          )
+        )
+        (local_fusion): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        (attention): CBAM(
+          (channel): ChannelAttention(
+            (mlp): Sequential(
+              (0): Conv2d(256, 32, kernel_size=(1, 1), stride=(1, 1))
+              (1): ReLU(inplace=True)
+              (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+            )
+            (sigmoid): Sigmoid()
+          )
+          (spatial): SpatialAttention(
+            (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+            (sigmoid): Sigmoid()
+          )
+        )
+      )
+    )
+  )
+  (up2): UpsampleFuseBlock(
+    (pre): Sequential(
+      (0): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (fuse): Sequential(
+      (0): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): RDABlockStack(
+        (0): ResidualDenseAttentionBlock(
+          (layers): ModuleList(
+            (0): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (1): Sequential(
+              (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (2): Sequential(
+              (0): Conv2d(192, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (3): Sequential(
+              (0): Conv2d(224, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+          )
+          (local_fusion): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+          (attention): CBAM(
+            (channel): ChannelAttention(
+              (mlp): Sequential(
+                (0): Conv2d(128, 16, kernel_size=(1, 1), stride=(1, 1))
+                (1): ReLU(inplace=True)
+                (2): Conv2d(16, 128, kernel_size=(1, 1), stride=(1, 1))
+              )
+              (sigmoid): Sigmoid()
+            )
+            (spatial): SpatialAttention(
+              (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+              (sigmoid): Sigmoid()
+            )
+          )
+        )
+        (1): ResidualDenseAttentionBlock(
+          (layers): ModuleList(
+            (0): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (1): Sequential(
+              (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (2): Sequential(
+              (0): Conv2d(192, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (3): Sequential(
+              (0): Conv2d(224, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+          )
+          (local_fusion): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+          (attention): CBAM(
+            (channel): ChannelAttention(
+              (mlp): Sequential(
+                (0): Conv2d(128, 16, kernel_size=(1, 1), stride=(1, 1))
+                (1): ReLU(inplace=True)
+                (2): Conv2d(16, 128, kernel_size=(1, 1), stride=(1, 1))
+              )
+              (sigmoid): Sigmoid()
+            )
+            (spatial): SpatialAttention(
+              (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+              (sigmoid): Sigmoid()
+            )
+          )
+        )
+      )
+    )
+  )
+  (up1): UpsampleFuseBlock(
+    (pre): Sequential(
+      (0): Conv2d(128, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (fuse): Sequential(
+      (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1))
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): RDABlockStack(
+        (0): ResidualDenseAttentionBlock(
+          (layers): ModuleList(
+            (0): Sequential(
+              (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (1): Sequential(
+              (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (2): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (3): Sequential(
+              (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+          )
+          (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+          (attention): CBAM(
+            (channel): ChannelAttention(
+              (mlp): Sequential(
+                (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+                (1): ReLU(inplace=True)
+                (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+              )
+              (sigmoid): Sigmoid()
+            )
+            (spatial): SpatialAttention(
+              (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+              (sigmoid): Sigmoid()
+            )
+          )
+        )
+        (1): ResidualDenseAttentionBlock(
+          (layers): ModuleList(
+            (0): Sequential(
+              (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (1): Sequential(
+              (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (2): Sequential(
+              (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+            (3): Sequential(
+              (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): LeakyReLU(negative_slope=0.2, inplace=True)
+            )
+          )
+          (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+          (attention): CBAM(
+            (channel): ChannelAttention(
+              (mlp): Sequential(
+                (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+                (1): ReLU(inplace=True)
+                (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+              )
+              (sigmoid): Sigmoid()
+            )
+            (spatial): SpatialAttention(
+              (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+              (sigmoid): Sigmoid()
+            )
+          )
+        )
+      )
+    )
+  )
+  (refine): RDABlockStack(
+    (0): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+    (1): ResidualDenseAttentionBlock(
+      (layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (1): Sequential(
+          (0): Conv2d(96, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (2): Sequential(
+          (0): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+        (3): Sequential(
+          (0): Conv2d(160, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): LeakyReLU(negative_slope=0.2, inplace=True)
+        )
+      )
+      (local_fusion): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+      (attention): CBAM(
+        (channel): ChannelAttention(
+          (mlp): Sequential(
+            (0): Conv2d(64, 8, kernel_size=(1, 1), stride=(1, 1))
+            (1): ReLU(inplace=True)
+            (2): Conv2d(8, 64, kernel_size=(1, 1), stride=(1, 1))
+          )
+          (sigmoid): Sigmoid()
+        )
+        (spatial): SpatialAttention(
+          (conv): Conv2d(2, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False)
+          (sigmoid): Sigmoid()
+        )
+      )
+    )
+  )
+  (out_conv): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+)
+Total number of parameters: 6954261
+The size of receptive field: 937
+create web directory ./checkpoints/errnet_rdaunet_scratch/web...
+[i] set learning rate to 0.0001
+
+Epoch: 0
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m15s | IPixel: 0
+.0535 | VGG: 3.1445 | | | 6 | 89 |
+saving the latest model at the end of epoch 1, iters 7732
+Time Taken: 558 sec
+Reset Dataset...
+
+Epoch: 1
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m19s | IPixel: 0
+.0458 | VGG: saving the latest model at the end of epoch 2, iters 15464
+Time Taken: 559 sec
+Reset Dataset...
+
+Epoch: 2
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m18s | IPixel: 0
+.0434 | VGG: saving the latest model at the end of epoch 3, iters 23196
+Time Taken: 559 sec
+Reset Dataset...
+
+Epoch: 3
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m24s | IPixel: 0
+.0410 | VGG: saving the latest model at the end of epoch 4, iters 30928
+Time Taken: 564 sec
+Reset Dataset...
+
+Epoch: 4
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m28s | IPixel: 0
+.0398 | VGG: saving the latest model at the end of epoch 5, iters 38660
+Time Taken: 568 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_5_end (epoch 5, iter 38660)
+ [================================================================>]  Step: 75ms |  100/100 5ms | LMSE: 0
+.0122 | NCC: [eval] ceilnet_table2: PSNR=18.1405, SSIM=0.8277, NCC=0.8946, LMSE=0.0122 | vs baseline: dPS
+NR=-9.7395, dSSIM=-0.1130, dNCC=-0.0862, dLMSE=+0.0074
+ [=============================================================>...]  Step: 544ms | T 20/20 214ms | LMSE:
+ 0.0237 | NCC[eval] real20: PSNR=21.3460, SSIM=0.7778, NCC=0.8509, LMSE=0.0237 | vs baseline: dPSNR=-2.20
+40, dSSIM=-0.0507, dNCC=-0.0368, dLMSE=+0.0036
+ [================================================================>]  Step: 298ms | T 200/200 3ms | LMSE:
+ 0.0034 | NCC[eval] objects: PSNR=24.3561, SSIM=0.8901, NCC=0.9815, LMSE=0.0034 | vs baseline: dPSNR=-0.4
+939, dSSIM=-0.0079, dNCC=-0.0002, dLMSE=+0.0005
+ [================================================================>]  Step: 297ms | T 179/179 3ms | LMSE:
+ 0.0062 | NCC[eval] postcard: PSNR=21.1803, SSIM=0.8598, NCC=0.9076, LMSE=0.0062 | vs baseline: dPSNR=-0.
+8897, dSSIM=-0.0175, dNCC=-0.0387, dLMSE=+0.0018
+ [================================================================>]  Step: 298ms | T 101/101 8ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.1373, SSIM=0.9070, NCC=0.9514, LMSE=0.0045 | vs baseline: dPSNR=-0.0427
+, dSSIM=+0.0210, dNCC=+0.0155, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.6739, SSIM=-0.0336, NCC=-0.0293, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.069114
+[eval] saved new best checkpoint: best_eval (score -0.069114)
+
+Epoch: 5
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m27s | IPixel: 0
+.0392 | VGG: saving the latest model at the end of epoch 6, iters 46392
+Time Taken: 568 sec
+Reset Dataset...
+
+Epoch: 6
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m29s | IPixel: 0
+.0375 | VGG: saving the latest model at the end of epoch 7, iters 54124
+Time Taken: 570 sec
+Reset Dataset...
+
+Epoch: 7
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m23s | IPixel: 0
+.0364 | VGG: saving the latest model at the end of epoch 8, iters 61856
+Time Taken: 564 sec
+Reset Dataset...
+
+Epoch: 8
+ [================================================== 7732/7732 ===>]  Step: 68ms | Tot: 9m32s | IPixel: 0
+.0356 | VGG: saving the latest model at the end of epoch 9, iters 69588
+Time Taken: 573 sec
+Reset Dataset...
+
+Epoch: 9
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m29s | IPixel: 0
+.0345 | VGG: saving the model at epoch 10, iters 77320
+saving the latest model at the end of epoch 10, iters 77320
+Time Taken: 570 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_10_end (epoch 10, iter 77320)
+ [================================================================>]  Step: 70ms |  100/100 6ms | LMSE: 0
+.0116 | NCC: [eval] ceilnet_table2: PSNR=18.7379, SSIM=0.8437, NCC=0.9059, LMSE=0.0116 | vs baseline: dPS
+NR=-9.1421, dSSIM=-0.0970, dNCC=-0.0749, dLMSE=+0.0068
+ [=============================================================>...]  Step: 240ms |  20/20 529ms | LMSE:
+0.0247 | NCC:[eval] real20: PSNR=21.5210, SSIM=0.7831, NCC=0.8428, LMSE=0.0247 | vs baseline: dPSNR=-2.02
+90, dSSIM=-0.0454, dNCC=-0.0449, dLMSE=+0.0046
+ [================================================================>]  Step: 297ms | T 200/200 5ms | LMSE:
+ 0.0034 | NCC[eval] objects: PSNR=24.9562, SSIM=0.9057, NCC=0.9794, LMSE=0.0034 | vs baseline: dPSNR=+0.1
+062, dSSIM=+0.0077, dNCC=-0.0023, dLMSE=+0.0005
+ [================================================================>]  Step: 297ms | T 179/179 0ms | LMSE:
+ 0.0130 | NCC[eval] postcard: PSNR=19.6423, SSIM=0.8173, NCC=0.8385, LMSE=0.0130 | vs baseline: dPSNR=-2.
+4277, dSSIM=-0.0600, dNCC=-0.1078, dLMSE=+0.0086
+ [================================================================>]  Step: 304ms |  101/101 8ms | LMSE:
+0.0052 | NCC:[eval] wild: PSNR=25.1021, SSIM=0.9096, NCC=0.9446, LMSE=0.0052 | vs baseline: dPSNR=-0.0779
+, dSSIM=+0.0236, dNCC=+0.0087, dLMSE=-0.0031
+[eval] mean metric deltas: PSNR=-2.7141, SSIM=-0.0342, NCC=-0.0443, LMSE=+0.0035
+[eval] selection score (mean relative PSNR/SSIM): -0.071396
+
+Epoch: 10
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m23s | IPixel: 0
+.0343 | VGG: saving the latest model at the end of epoch 11, iters 85052
+Time Taken: 564 sec
+Reset Dataset...
+
+Epoch: 11
+ [================================================== 7732/7732 ===>]  Step: 68ms | Tot: 9m29s | IPixel: 0
+.0336 | VGG: saving the latest model at the end of epoch 12, iters 92784
+Time Taken: 569 sec
+Reset Dataset...
+
+Epoch: 12
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m25s | IPixel: 0
+.0332 | VGG: saving the latest model at the end of epoch 13, iters 100516
+Time Taken: 566 sec
+Reset Dataset...
+
+Epoch: 13
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m30s | IPixel: 0
+.0329 | VGG: saving the latest model at the end of epoch 14, iters 108248
+Time Taken: 570 sec
+Reset Dataset...
+
+Epoch: 14
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m27s | IPixel: 0
+.0316 | VGG: saving the latest model at the end of epoch 15, iters 115980
+Time Taken: 568 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_15_end (epoch 15, iter 115980)
+ [================================================================>]  Step: 71ms |  100/100 3ms | LMSE: 0
+.0101 | NCC: [eval] ceilnet_table2: PSNR=18.8638, SSIM=0.8497, NCC=0.9133, LMSE=0.0101 | vs baseline: dPS
+NR=-9.0162, dSSIM=-0.0910, dNCC=-0.0675, dLMSE=+0.0053
+ [=============================================================>...]  Step: 241ms |  20/20 433ms | LMSE:
+0.0217 | NCC:[eval] real20: PSNR=22.1144, SSIM=0.8015, NCC=0.8578, LMSE=0.0217 | vs baseline: dPSNR=-1.43
+56, dSSIM=-0.0270, dNCC=-0.0299, dLMSE=+0.0016
+ [================================================================>]  Step: 300ms | T 200/200 6ms | LMSE:
+ 0.0033 | NCC[eval] objects: PSNR=24.9355, SSIM=0.9009, NCC=0.9799, LMSE=0.0033 | vs baseline: dPSNR=+0.0
+855, dSSIM=+0.0029, dNCC=-0.0018, dLMSE=+0.0004
+ [================================================================>]  Step: 296ms | T 179/179 2ms | LMSE:
+ 0.0113 | NCC[eval] postcard: PSNR=20.1394, SSIM=0.8294, NCC=0.8638, LMSE=0.0113 | vs baseline: dPSNR=-1.
+9306, dSSIM=-0.0479, dNCC=-0.0825, dLMSE=+0.0069
+ [================================================================>]  Step: 295ms | T 101/101 4ms | LMSE:
+ 0.0050 | NCC[eval] wild: PSNR=25.5464, SSIM=0.9113, NCC=0.9510, LMSE=0.0050 | vs baseline: dPSNR=+0.3664
+, dSSIM=+0.0253, dNCC=+0.0151, dLMSE=-0.0033
+[eval] mean metric deltas: PSNR=-2.3861, SSIM=-0.0275, NCC=-0.0333, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.060582
+[eval] saved new best checkpoint: best_eval (score -0.060582)
+
+Epoch: 15
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m28s | IPixel: 0
+.0311 | VGG: saving the latest model at the end of epoch 16, iters 123712
+Time Taken: 569 sec
+Reset Dataset...
+
+Epoch: 16
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m26s | IPixel: 0
+.0311 | VGG: saving the latest model at the end of epoch 17, iters 131444
+Time Taken: 566 sec
+Reset Dataset...
+
+Epoch: 17
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m22s | IPixel: 0
+.0308 | VGG: saving the latest model at the end of epoch 18, iters 139176
+Time Taken: 563 sec
+Reset Dataset...
+
+Epoch: 18
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m25s | IPixel: 0
+.0307 | VGG: saving the latest model at the end of epoch 19, iters 146908
+Time Taken: 566 sec
+Reset Dataset...
+
+Epoch: 19
+ [================================================== 7732/7732 ===>]  Step: 70ms | Tot: 9m23s | IPixel: 0
+.0301 | VGG: saving the model at epoch 20, iters 154640
+saving the latest model at the end of epoch 20, iters 154640
+Time Taken: 564 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_20_end (epoch 20, iter 154640)
+ [================================================================>]  Step: 71ms |  100/100 2ms | LMSE: 0
+.0095 | NCC: [eval] ceilnet_table2: PSNR=19.1368, SSIM=0.8528, NCC=0.9173, LMSE=0.0095 | vs baseline: dPS
+NR=-8.7432, dSSIM=-0.0879, dNCC=-0.0635, dLMSE=+0.0047
+ [=============================================================>...]  Step: 241ms |  20/20 561ms | LMSE:
+0.0210 | NCC:[eval] real20: PSNR=22.3051, SSIM=0.8038, NCC=0.8763, LMSE=0.0210 | vs baseline: dPSNR=-1.24
+49, dSSIM=-0.0247, dNCC=-0.0114, dLMSE=+0.0009
+ [================================================================>]  Step: 294ms | T 200/200 1ms | LMSE:
+ 0.0039 | NCC[eval] objects: PSNR=23.9736, SSIM=0.8912, NCC=0.9751, LMSE=0.0039 | vs baseline: dPSNR=-0.8
+764, dSSIM=-0.0068, dNCC=-0.0066, dLMSE=+0.0010
+ [================================================================>]  Step: 295ms | T 179/179 3ms | LMSE:
+ 0.0195 | NCC[eval] postcard: PSNR=18.7819, SSIM=0.7956, NCC=0.7591, LMSE=0.0195 | vs baseline: dPSNR=-3.
+2881, dSSIM=-0.0817, dNCC=-0.1872, dLMSE=+0.0151
+ [================================================================>]  Step: 295ms | T 101/101 0ms | LMSE:
+ 0.0051 | NCC[eval] wild: PSNR=25.0293, SSIM=0.9068, NCC=0.9465, LMSE=0.0051 | vs baseline: dPSNR=-0.1507
+, dSSIM=+0.0208, dNCC=+0.0106, dLMSE=-0.0032
+[eval] mean metric deltas: PSNR=-2.8607, SSIM=-0.0361, NCC=-0.0516, LMSE=+0.0037
+[eval] selection score (mean relative PSNR/SSIM): -0.075724
+
+Epoch: 20
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m21s | IPixel: 0
+.0302 | VGG: saving the latest model at the end of epoch 21, iters 162372
+Time Taken: 561 sec
+Reset Dataset...
+
+Epoch: 21
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m22s | IPixel: 0
+.0299 | VGG: saving the latest model at the end of epoch 22, iters 170104
+Time Taken: 563 sec
+Reset Dataset...
+
+Epoch: 22
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m15s | IPixel: 0
+.0295 | VGG: saving the latest model at the end of epoch 23, iters 177836
+Time Taken: 556 sec
+Reset Dataset...
+
+Epoch: 23
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m16s | IPixel: 0
+.0296 | VGG: saving the latest model at the end of epoch 24, iters 185568
+Time Taken: 556 sec
+Reset Dataset...
+
+Epoch: 24
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m17s | IPixel: 0
+.0290 | VGG: saving the latest model at the end of epoch 25, iters 193300
+Time Taken: 558 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_25_end (epoch 25, iter 193300)
+ [================================================================>]  Step: 70ms |  100/100 3ms | LMSE: 0
+.0096 | NCC: [eval] ceilnet_table2: PSNR=19.1460, SSIM=0.8584, NCC=0.9223, LMSE=0.0096 | vs baseline: dPS
+NR=-8.7340, dSSIM=-0.0823, dNCC=-0.0585, dLMSE=+0.0048
+ [=============================================================>...]  Step: 240ms |  20/20 329ms | LMSE:
+0.0206 | NCC:[eval] real20: PSNR=22.9967, SSIM=0.8059, NCC=0.8829, LMSE=0.0206 | vs baseline: dPSNR=-0.55
+33, dSSIM=-0.0226, dNCC=-0.0048, dLMSE=+0.0005
+ [================================================================>]  Step: 296ms | T 200/200 0ms | LMSE:
+ 0.0035 | NCC[eval] objects: PSNR=24.2227, SSIM=0.8953, NCC=0.9804, LMSE=0.0035 | vs baseline: dPSNR=-0.6
+273, dSSIM=-0.0027, dNCC=-0.0013, dLMSE=+0.0006
+ [================================================================>]  Step: 295ms | T 179/179 3ms | LMSE:
+ 0.0106 | NCC[eval] postcard: PSNR=20.6241, SSIM=0.8445, NCC=0.8664, LMSE=0.0106 | vs baseline: dPSNR=-1.
+4459, dSSIM=-0.0328, dNCC=-0.0799, dLMSE=+0.0062
+ [================================================================>]  Step: 295ms | T 101/101 8ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.5185, SSIM=0.9124, NCC=0.9549, LMSE=0.0045 | vs baseline: dPSNR=+0.3385
+, dSSIM=+0.0264, dNCC=+0.0190, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.2044, SSIM=-0.0228, NCC=-0.0251, LMSE=+0.0016
+[eval] selection score (mean relative PSNR/SSIM): -0.053951
+[eval] saved new best checkpoint: best_eval (score -0.053951)
+
+Epoch: 25
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m20s | IPixel: 0
+.0290 | VGG: saving the latest model at the end of epoch 26, iters 201032
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 26
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m14s | IPixel: 0
+.0285 | VGG: saving the latest model at the end of epoch 27, iters 208764
+Time Taken: 555 sec
+Reset Dataset...
+
+Epoch: 27
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m14s | IPixel: 0
+.0286 | VGG: saving the latest model at the end of epoch 28, iters 216496
+Time Taken: 555 sec
+Reset Dataset...
+
+Epoch: 28
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m17s | IPixel: 0
+.0284 | VGG: saving the latest model at the end of epoch 29, iters 224228
+Time Taken: 558 sec
+Reset Dataset...
+
+Epoch: 29
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m23s | IPixel: 0
+.0280 | VGG: saving the model at epoch 30, iters 231960
+saving the latest model at the end of epoch 30, iters 231960
+Time Taken: 564 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_30_end (epoch 30, iter 231960)
+ [================================================================>]  Step: 70ms |  100/100 5ms | LMSE: 0
+.0088 | NCC: [eval] ceilnet_table2: PSNR=19.3741, SSIM=0.8653, NCC=0.9240, LMSE=0.0088 | vs baseline: dPS
+NR=-8.5059, dSSIM=-0.0754, dNCC=-0.0568, dLMSE=+0.0040
+ [=============================================================>...]  Step: 241ms |  20/20 341ms | LMSE:
+0.0213 | NCC:[eval] real20: PSNR=22.7531, SSIM=0.8036, NCC=0.8670, LMSE=0.0213 | vs baseline: dPSNR=-0.79
+69, dSSIM=-0.0249, dNCC=-0.0207, dLMSE=+0.0012
+ [================================================================>]  Step: 296ms |  200/200 2ms | LMSE:
+0.0030 | NCC:[eval] objects: PSNR=24.9643, SSIM=0.9023, NCC=0.9825, LMSE=0.0030 | vs baseline: dPSNR=+0.1
+143, dSSIM=+0.0043, dNCC=+0.0008, dLMSE=+0.0001
+ [================================================================>]  Step: 294ms |  179/179 0ms | LMSE:
+0.0064 | NCC:[eval] postcard: PSNR=21.6619, SSIM=0.8681, NCC=0.9155, LMSE=0.0064 | vs baseline: dPSNR=-0.
+4081, dSSIM=-0.0092, dNCC=-0.0308, dLMSE=+0.0020
+ [================================================================>]  Step: 294ms | T 101/101 6ms | LMSE:
+ 0.0050 | NCC[eval] wild: PSNR=25.3865, SSIM=0.9099, NCC=0.9509, LMSE=0.0050 | vs baseline: dPSNR=+0.2065
+, dSSIM=+0.0239, dNCC=+0.0150, dLMSE=-0.0033
+[eval] mean metric deltas: PSNR=-1.8780, SSIM=-0.0163, NCC=-0.0185, LMSE=+0.0008
+[eval] selection score (mean relative PSNR/SSIM): -0.043354
+[eval] saved new best checkpoint: best_eval (score -0.043354)
+[i] set learning rate to 5e-05
+
+Epoch: 30
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m21s | IPixel: 0
+.0268 | VGG: saving the latest model at the end of epoch 31, iters 239692
+Time Taken: 562 sec
+Reset Dataset...
+
+Epoch: 31
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m15s | IPixel: 0
+.0270 | VGG: saving the latest model at the end of epoch 32, iters 247424
+Time Taken: 556 sec
+Reset Dataset...
+
+Epoch: 32
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m11s | IPixel: 0
+.0264 | VGG: saving the latest model at the end of epoch 33, iters 255156
+Time Taken: 552 sec
+Reset Dataset...
+
+Epoch: 33
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m13s | IPixel: 0
+.0266 | VGG: saving the latest model at the end of epoch 34, iters 262888
+Time Taken: 554 sec
+Reset Dataset...
+
+Epoch: 34
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m18s | IPixel: 0
+.0265 | VGG: saving the latest model at the end of epoch 35, iters 270620
+Time Taken: 559 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_35_end (epoch 35, iter 270620)
+ [================================================================>]  Step: 70ms |  100/100 7ms | LMSE: 0
+.0086 | NCC: [eval] ceilnet_table2: PSNR=19.4786, SSIM=0.8711, NCC=0.9278, LMSE=0.0086 | vs baseline: dPS
+NR=-8.4014, dSSIM=-0.0696, dNCC=-0.0530, dLMSE=+0.0038
+ [=============================================================>...]  Step: 239ms |  20/20 592ms | LMSE:
+0.0234 | NCC:[eval] real20: PSNR=21.5347, SSIM=0.7883, NCC=0.8492, LMSE=0.0234 | vs baseline: dPSNR=-2.01
+53, dSSIM=-0.0402, dNCC=-0.0385, dLMSE=+0.0033
+ [================================================================>]  Step: 294ms | T 200/200 3ms | LMSE:
+ 0.0036 | NCC[eval] objects: PSNR=24.3273, SSIM=0.8905, NCC=0.9772, LMSE=0.0036 | vs baseline: dPSNR=-0.5
+227, dSSIM=-0.0075, dNCC=-0.0045, dLMSE=+0.0007
+ [================================================================>]  Step: 298ms | T 179/179 7ms | LMSE:
+ 0.0193 | NCC[eval] postcard: PSNR=18.4851, SSIM=0.7910, NCC=0.7909, LMSE=0.0193 | vs baseline: dPSNR=-3.
+5849, dSSIM=-0.0863, dNCC=-0.1554, dLMSE=+0.0149
+ [================================================================>]  Step: 300ms | T 101/101 4ms | LMSE:
+ 0.0058 | NCC[eval] wild: PSNR=24.8721, SSIM=0.9000, NCC=0.9369, LMSE=0.0058 | vs baseline: dPSNR=-0.3079
+, dSSIM=+0.0140, dNCC=+0.0010, dLMSE=-0.0025
+[eval] mean metric deltas: PSNR=-2.9664, SSIM=-0.0379, NCC=-0.0501, LMSE=+0.0041
+[eval] selection score (mean relative PSNR/SSIM): -0.079595
+
+Epoch: 35
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0262 | VGG: saving the latest model at the end of epoch 36, iters 278352
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 36
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0263 | VGG: saving the latest model at the end of epoch 37, iters 286084
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 37
+ [================================================== 7732/7732 ===>]  Step: 68ms | Tot: 9m19s | IPixel: 0
+.0260 | VGG: saving the latest model at the end of epoch 38, iters 293816
+Time Taken: 559 sec
+Reset Dataset...
+
+Epoch: 38
+ [================================================== 7732/7732 ===>]  Step: 67ms | Tot: 9m12s | IPixel: 0
+.0263 | VGG: saving the latest model at the end of epoch 39, iters 301548
+Time Taken: 553 sec
+Reset Dataset...
+
+Epoch: 39
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m13s | IPixel: 0
+.0261 | VGG: saving the model at epoch 40, iters 309280
+saving the latest model at the end of epoch 40, iters 309280
+Time Taken: 554 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_40_end (epoch 40, iter 309280)
+ [================================================================>]  Step: 71ms |  100/100 1ms | LMSE: 0
+.0089 | NCC: [eval] ceilnet_table2: PSNR=19.7602, SSIM=0.8722, NCC=0.9296, LMSE=0.0089 | vs baseline: dPS
+NR=-8.1198, dSSIM=-0.0685, dNCC=-0.0512, dLMSE=+0.0041
+ [=============================================================>...]  Step: 241ms |  20/20 593ms | LMSE:
+0.0195 | NCC:[eval] real20: PSNR=23.3171, SSIM=0.8195, NCC=0.8923, LMSE=0.0195 | vs baseline: dPSNR=-0.23
+29, dSSIM=-0.0090, dNCC=+0.0046, dLMSE=-0.0006
+ [================================================================>]  Step: 297ms |  200/200 2ms | LMSE:
+0.0031 | NCC:[eval] objects: PSNR=24.8973, SSIM=0.9020, NCC=0.9821, LMSE=0.0031 | vs baseline: dPSNR=+0.0
+473, dSSIM=+0.0040, dNCC=+0.0004, dLMSE=+0.0002
+ [================================================================>]  Step: 292ms |  179/179 4ms | LMSE:
+0.0140 | NCC:[eval] postcard: PSNR=19.9382, SSIM=0.8231, NCC=0.8451, LMSE=0.0140 | vs baseline: dPSNR=-2.
+1318, dSSIM=-0.0542, dNCC=-0.1012, dLMSE=+0.0096
+ [================================================================>]  Step: 292ms | T 101/101 0ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.9039, SSIM=0.9143, NCC=0.9559, LMSE=0.0045 | vs baseline: dPSNR=+0.7239
+, dSSIM=+0.0283, dNCC=+0.0200, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-1.9427, SSIM=-0.0199, NCC=-0.0255, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.047617
+[i] set learning rate to 1e-05
+
+Epoch: 40
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m13s | IPixel: 0
+.0252 | VGG: saving the latest model at the end of epoch 41, iters 317012
+Time Taken: 554 sec
+Reset Dataset...
+
+Epoch: 41
+ [================================================== 7732/7732 ===>]  Step: 81ms | Tot: 9m10s | IPixel: 0
+.0248 | VGG: saving the latest model at the end of epoch 42, iters 324744
+Time Taken: 551 sec
+Reset Dataset...
+
+Epoch: 42
+ [================================================== 7732/7732 ===>]  Step: 61ms | Tot: 9m19s | IPixel: 0
+.0246 | VGG: saving the latest model at the end of epoch 43, iters 332476
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 43
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m17s | IPixel: 0
+.0249 | VGG: saving the latest model at the end of epoch 44, iters 340208
+Time Taken: 557 sec
+Reset Dataset...
+
+Epoch: 44
+ [================================================= 7732/7732 ====>]  Step: 65ms | Tot: 9m9s | IPixel: 0.
+0249 | VGG: 1saving the latest model at the end of epoch 45, iters 347940
+Time Taken: 550 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_45_end (epoch 45, iter 347940)
+ [================================================================>]  Step: 70ms | 100/100 1ms | LMSE: 0.
+0082 | NCC: 0[eval] ceilnet_table2: PSNR=19.7898, SSIM=0.8762, NCC=0.9310, LMSE=0.0082 | vs baseline: dPS
+NR=-8.0902, dSSIM=-0.0645, dNCC=-0.0498, dLMSE=+0.0034
+ [=============================================================>...]  Step: 239ms |  20/20 342ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.4463, SSIM=0.8191, NCC=0.8937, LMSE=0.0194 | vs baseline: dPSNR=-0.10
+37, dSSIM=-0.0094, dNCC=+0.0060, dLMSE=-0.0007
+ [================================================================>]  Step: 295ms | T 200/200 0ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7709, SSIM=0.8992, NCC=0.9832, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+791, dSSIM=+0.0012, dNCC=+0.0015, dLMSE=+0.0002
+ [================================================================>]  Step: 292ms | T 179/179 0ms | LMSE:
+ 0.0149 | NCC[eval] postcard: PSNR=19.6136, SSIM=0.8185, NCC=0.8285, LMSE=0.0149 | vs baseline: dPSNR=-2.
+4564, dSSIM=-0.0588, dNCC=-0.1178, dLMSE=+0.0105
+ [================================================================>]  Step: 293ms | T 101/101 5ms | LMSE:
+ 0.0043 | NCC[eval] wild: PSNR=25.7040, SSIM=0.9138, NCC=0.9557, LMSE=0.0043 | vs baseline: dPSNR=+0.5240
+, dSSIM=+0.0278, dNCC=+0.0198, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=-2.0411, SSIM=-0.0208, NCC=-0.0281, LMSE=+0.0019
+[eval] selection score (mean relative PSNR/SSIM): -0.050268
+[i] adjust fusion ratio to [0.5, 0.5]
+[i] set learning rate to 5e-05
+
+Epoch: 45
+ [================================================== 7732/7732 ===>]  Step: 68ms | Tot: 9m19s | IPixel: 0
+.0234 | VGG: saving the latest model at the end of epoch 46, iters 355672
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 46
+ [================================================= 7732/7732 ====>]  Step: 67ms | Tot: 9m9s | IPixel: 0.
+0235 | VGG: 1saving the latest model at the end of epoch 47, iters 363404
+Time Taken: 550 sec
+Reset Dataset...
+
+Epoch: 47
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m16s | IPixel: 0
+.0231 | VGG: saving the latest model at the end of epoch 48, iters 371136
+Time Taken: 557 sec
+Reset Dataset...
+
+Epoch: 48
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0228 | VGG: saving the latest model at the end of epoch 49, iters 378868
+Time Taken: 560 sec
+Reset Dataset...
+
+Epoch: 49
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m12s | IPixel: 0
+.0229 | VGG: saving the model at epoch 50, iters 386600
+saving the latest model at the end of epoch 50, iters 386600
+Time Taken: 553 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_50_end (epoch 50, iter 386600)
+ [================================================================>]  Step: 71ms |  100/100 5ms | LMSE: 0
+.0083 | NCC: [eval] ceilnet_table2: PSNR=19.7397, SSIM=0.8757, NCC=0.9305, LMSE=0.0083 | vs baseline: dPS
+NR=-8.1403, dSSIM=-0.0650, dNCC=-0.0503, dLMSE=+0.0035
+ [=============================================================>...]  Step: 243ms |  20/20 387ms | LMSE:
+0.0203 | NCC:[eval] real20: PSNR=23.5214, SSIM=0.8193, NCC=0.8903, LMSE=0.0203 | vs baseline: dPSNR=-0.02
+86, dSSIM=-0.0092, dNCC=+0.0026, dLMSE=+0.0002
+ [================================================================>]  Step: 296ms | T 200/200 2ms | LMSE:
+ 0.0030 | NCC[eval] objects: PSNR=24.8814, SSIM=0.8996, NCC=0.9829, LMSE=0.0030 | vs baseline: dPSNR=+0.0
+314, dSSIM=+0.0016, dNCC=+0.0012, dLMSE=+0.0001
+ [================================================================>]  Step: 296ms | T 179/179 3ms | LMSE:
+ 0.0187 | NCC[eval] postcard: PSNR=19.4773, SSIM=0.8088, NCC=0.8100, LMSE=0.0187 | vs baseline: dPSNR=-2.
+5927, dSSIM=-0.0685, dNCC=-0.1363, dLMSE=+0.0143
+ [================================================================>]  Step: 294ms | T 101/101 5ms | LMSE:
+ 0.0050 | NCC[eval] wild: PSNR=25.0943, SSIM=0.9059, NCC=0.9467, LMSE=0.0050 | vs baseline: dPSNR=-0.0857
+, dSSIM=+0.0199, dNCC=+0.0108, dLMSE=-0.0033
+[eval] mean metric deltas: PSNR=-2.1632, SSIM=-0.0242, NCC=-0.0344, LMSE=+0.0030
+[eval] selection score (mean relative PSNR/SSIM): -0.054679
+[i] set learning rate to 1e-05
+
+Epoch: 50
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m12s | IPixel: 0
+.0222 | VGG: saving the latest model at the end of epoch 51, iters 394332
+Time Taken: 553 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_51_end (epoch 51, iter 394332)
+ [================================================================>]  Step: 70ms |  100/100 2ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.7177, SSIM=0.8768, NCC=0.9329, LMSE=0.0081 | vs baseline: dPS
+NR=-8.1623, dSSIM=-0.0639, dNCC=-0.0479, dLMSE=+0.0033
+ [=============================================================>...]  Step: 238ms |  20/20 299ms | LMSE:
+0.0196 | NCC:[eval] real20: PSNR=23.5219, SSIM=0.8202, NCC=0.8946, LMSE=0.0196 | vs baseline: dPSNR=-0.02
+81, dSSIM=-0.0083, dNCC=+0.0069, dLMSE=-0.0005
+ [================================================================>]  Step: 292ms | T 200/200 1ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.4134, SSIM=0.8957, NCC=0.9816, LMSE=0.0032 | vs baseline: dPSNR=-0.4
+366, dSSIM=-0.0023, dNCC=-0.0001, dLMSE=+0.0003
+ [================================================================>]  Step: 292ms | T 179/179 3ms | LMSE:
+ 0.0164 | NCC[eval] postcard: PSNR=19.4303, SSIM=0.8128, NCC=0.8205, LMSE=0.0164 | vs baseline: dPSNR=-2.
+6397, dSSIM=-0.0645, dNCC=-0.1258, dLMSE=+0.0120
+ [================================================================>]  Step: 292ms | T 101/101 2ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.0266, SSIM=0.9096, NCC=0.9525, LMSE=0.0045 | vs baseline: dPSNR=-0.1534
+, dSSIM=+0.0236, dNCC=+0.0166, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.2840, SSIM=-0.0231, NCC=-0.0300, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.056450
+
+Epoch: 51
+ [================================================= 7732/7732 ====>]  Step: 67ms | Tot: 9m9s | IPixel: 0.
+0222 | VGG: 1saving the latest model at the end of epoch 52, iters 402064
+Time Taken: 550 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_52_end (epoch 52, iter 402064)
+ [================================================================>]  Step: 71ms |  100/100 0ms | LMSE: 0
+.0082 | NCC: [eval] ceilnet_table2: PSNR=19.7148, SSIM=0.8773, NCC=0.9322, LMSE=0.0082 | vs baseline: dPS
+NR=-8.1652, dSSIM=-0.0634, dNCC=-0.0486, dLMSE=+0.0034
+ [=============================================================>...]  Step: 245ms |  20/20 371ms | LMSE:
+0.0197 | NCC:[eval] real20: PSNR=23.4257, SSIM=0.8195, NCC=0.8913, LMSE=0.0197 | vs baseline: dPSNR=-0.12
+43, dSSIM=-0.0090, dNCC=+0.0036, dLMSE=-0.0004
+ [================================================================>]  Step: 296ms | T 200/200 4ms | LMSE:
+ 0.0033 | NCC[eval] objects: PSNR=24.4346, SSIM=0.8950, NCC=0.9825, LMSE=0.0033 | vs baseline: dPSNR=-0.4
+154, dSSIM=-0.0030, dNCC=+0.0008, dLMSE=+0.0004
+ [================================================================>]  Step: 294ms | T 179/179 9ms | LMSE:
+ 0.0184 | NCC[eval] postcard: PSNR=19.2266, SSIM=0.8079, NCC=0.8085, LMSE=0.0184 | vs baseline: dPSNR=-2.
+8434, dSSIM=-0.0694, dNCC=-0.1378, dLMSE=+0.0140
+ [================================================================>]  Step: 293ms | T 101/101 6ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.2246, SSIM=0.9085, NCC=0.9520, LMSE=0.0045 | vs baseline: dPSNR=+0.0446
+, dSSIM=+0.0225, dNCC=+0.0161, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.3007, SSIM=-0.0245, NCC=-0.0332, LMSE=+0.0027
+[eval] selection score (mean relative PSNR/SSIM): -0.057737
+
+Epoch: 52
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0223 | VGG: saving the latest model at the end of epoch 53, iters 409796
+Time Taken: 560 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_53_end (epoch 53, iter 409796)
+ [================================================================>]  Step: 71ms |  100/100 4ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.6153, SSIM=0.8762, NCC=0.9319, LMSE=0.0081 | vs baseline: dPS
+NR=-8.2647, dSSIM=-0.0645, dNCC=-0.0489, dLMSE=+0.0033
+ [=============================================================>...]  Step: 244ms |  20/20 387ms | LMSE:
+0.0195 | NCC:[eval] real20: PSNR=23.3881, SSIM=0.8195, NCC=0.8920, LMSE=0.0195 | vs baseline: dPSNR=-0.16
+19, dSSIM=-0.0090, dNCC=+0.0043, dLMSE=-0.0006
+ [================================================================>]  Step: 298ms | T 200/200 3ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.4262, SSIM=0.8951, NCC=0.9824, LMSE=0.0032 | vs baseline: dPSNR=-0.4
+238, dSSIM=-0.0029, dNCC=+0.0007, dLMSE=+0.0003
+ [================================================================>]  Step: 298ms | T 179/179 9ms | LMSE:
+ 0.0171 | NCC[eval] postcard: PSNR=19.3559, SSIM=0.8117, NCC=0.8228, LMSE=0.0171 | vs baseline: dPSNR=-2.
+7141, dSSIM=-0.0656, dNCC=-0.1235, dLMSE=+0.0127
+ [================================================================>]  Step: 298ms | T 101/101 2ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.1734, SSIM=0.9091, NCC=0.9528, LMSE=0.0045 | vs baseline: dPSNR=-0.0066
+, dSSIM=+0.0231, dNCC=+0.0169, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.3142, SSIM=-0.0238, NCC=-0.0301, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.057495
+
+Epoch: 53
+ [================================================= 7732/7732 ====>]  Step: 65ms | Tot: 9m6s | IPixel: 0.
+0221 | VGG: 1saving the latest model at the end of epoch 54, iters 417528
+Time Taken: 547 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_54_end (epoch 54, iter 417528)
+ [================================================================>]  Step: 71ms |  100/100 6ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.8789, SSIM=0.8776, NCC=0.9323, LMSE=0.0081 | vs baseline: dPS
+NR=-8.0011, dSSIM=-0.0631, dNCC=-0.0485, dLMSE=+0.0033
+ [=============================================================>...]  Step: 238ms |  20/20 327ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.4852, SSIM=0.8209, NCC=0.8895, LMSE=0.0194 | vs baseline: dPSNR=-0.06
+48, dSSIM=-0.0076, dNCC=+0.0018, dLMSE=-0.0007
+ [================================================================>]  Step: 294ms | T 200/200 3ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7505, SSIM=0.8981, NCC=0.9831, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+995, dSSIM=+0.0001, dNCC=+0.0014, dLMSE=+0.0002
+ [================================================================>]  Step: 295ms | T 179/179 2ms | LMSE:
+ 0.0129 | NCC[eval] postcard: PSNR=19.9798, SSIM=0.8292, NCC=0.8454, LMSE=0.0129 | vs baseline: dPSNR=-2.
+0902, dSSIM=-0.0481, dNCC=-0.1009, dLMSE=+0.0085
+ [================================================================>]  Step: 295ms | T 101/101 4ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.4844, SSIM=0.9098, NCC=0.9534, LMSE=0.0044 | vs baseline: dPSNR=+0.3044
+, dSSIM=+0.0238, dNCC=+0.0175, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-1.9902, SSIM=-0.0190, NCC=-0.0257, LMSE=+0.0015
+[eval] selection score (mean relative PSNR/SSIM): -0.048052
+
+Epoch: 54
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m15s | IPixel: 0
+.0220 | VGG: saving the latest model at the end of epoch 55, iters 425260
+Time Taken: 556 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_55_end (epoch 55, iter 425260)
+ [================================================================>]  Step: 70ms |  100/100 9ms | LMSE: 0
+.0082 | NCC: [eval] ceilnet_table2: PSNR=19.7134, SSIM=0.8772, NCC=0.9313, LMSE=0.0082 | vs baseline: dPS
+NR=-8.1666, dSSIM=-0.0635, dNCC=-0.0495, dLMSE=+0.0034
+ [=============================================================>...]  Step: 237ms |  20/20 291ms | LMSE:
+0.0191 | NCC:[eval] real20: PSNR=23.5764, SSIM=0.8221, NCC=0.8939, LMSE=0.0191 | vs baseline: dPSNR=+0.02
+64, dSSIM=-0.0064, dNCC=+0.0062, dLMSE=-0.0010
+ [================================================================>]  Step: 294ms | T 200/200 3ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7646, SSIM=0.8981, NCC=0.9831, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+854, dSSIM=+0.0001, dNCC=+0.0014, dLMSE=+0.0002
+ [================================================================>]  Step: 296ms | T 179/179 5ms | LMSE:
+ 0.0159 | NCC[eval] postcard: PSNR=19.6486, SSIM=0.8179, NCC=0.8257, LMSE=0.0159 | vs baseline: dPSNR=-2.
+4214, dSSIM=-0.0594, dNCC=-0.1206, dLMSE=+0.0115
+ [================================================================>]  Step: 294ms | T 101/101 4ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.3484, SSIM=0.9092, NCC=0.9532, LMSE=0.0044 | vs baseline: dPSNR=+0.1684
+, dSSIM=+0.0232, dNCC=+0.0173, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-2.0957, SSIM=-0.0212, NCC=-0.0290, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.051479
+
+Epoch: 55
+ [================================================= 7732/7732 ====>]  Step: 66ms | Tot: 9m7s | IPixel: 0.
+0219 | VGG: 1saving the latest model at the end of epoch 56, iters 432992
+Time Taken: 548 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_56_end (epoch 56, iter 432992)
+ [================================================================>]  Step: 73ms |  100/100 8ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.7468, SSIM=0.8760, NCC=0.9309, LMSE=0.0081 | vs baseline: dPS
+NR=-8.1332, dSSIM=-0.0647, dNCC=-0.0499, dLMSE=+0.0033
+ [=============================================================>...]  Step: 239ms |  20/20 317ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.4685, SSIM=0.8201, NCC=0.8922, LMSE=0.0194 | vs baseline: dPSNR=-0.08
+15, dSSIM=-0.0084, dNCC=+0.0045, dLMSE=-0.0007
+ [================================================================>]  Step: 292ms | T 200/200 1ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.8560, SSIM=0.8987, NCC=0.9835, LMSE=0.0031 | vs baseline: dPSNR=+0.0
+060, dSSIM=+0.0007, dNCC=+0.0018, dLMSE=+0.0002
+ [================================================================>]  Step: 294ms | T 179/179 8ms | LMSE:
+ 0.0167 | NCC[eval] postcard: PSNR=19.1971, SSIM=0.8094, NCC=0.8171, LMSE=0.0167 | vs baseline: dPSNR=-2.
+8729, dSSIM=-0.0679, dNCC=-0.1292, dLMSE=+0.0123
+ [================================================================>]  Step: 296ms | T 101/101 7ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.3976, SSIM=0.9100, NCC=0.9540, LMSE=0.0044 | vs baseline: dPSNR=+0.2176
+, dSSIM=+0.0240, dNCC=+0.0181, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-2.1728, SSIM=-0.0233, NCC=-0.0310, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.054487
+
+Epoch: 56
+ [================================================= 7732/7732 ====>]  Step: 65ms | Tot: 9m7s | IPixel: 0.
+0219 | VGG: 1saving the latest model at the end of epoch 57, iters 440724
+Time Taken: 547 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_57_end (epoch 57, iter 440724)
+ [================================================================>]  Step: 70ms | 100/100 7ms | LMSE: 0.
+0081 | NCC: 0[eval] ceilnet_table2: PSNR=19.8945, SSIM=0.8775, NCC=0.9321, LMSE=0.0081 | vs baseline: dPS
+NR=-7.9855, dSSIM=-0.0632, dNCC=-0.0487, dLMSE=+0.0033
+ [=============================================================>...]  Step: 240ms |  20/20 348ms | LMSE:
+0.0192 | NCC:[eval] real20: PSNR=23.6150, SSIM=0.8216, NCC=0.8939, LMSE=0.0192 | vs baseline: dPSNR=+0.06
+50, dSSIM=-0.0069, dNCC=+0.0062, dLMSE=-0.0009
+ [================================================================>]  Step: 295ms | T 200/200 6ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7978, SSIM=0.8988, NCC=0.9831, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+522, dSSIM=+0.0008, dNCC=+0.0014, dLMSE=+0.0002
+ [================================================================>]  Step: 296ms | T 179/179 2ms | LMSE:
+ 0.0172 | NCC[eval] postcard: PSNR=19.3467, SSIM=0.8086, NCC=0.8186, LMSE=0.0172 | vs baseline: dPSNR=-2.
+7233, dSSIM=-0.0687, dNCC=-0.1277, dLMSE=+0.0128
+ [================================================================>]  Step: 294ms |  101/101 2ms | LMSE:
+0.0045 | NCC:[eval] wild: PSNR=25.3674, SSIM=0.9094, NCC=0.9546, LMSE=0.0045 | vs baseline: dPSNR=+0.1874
+, dSSIM=+0.0234, dNCC=+0.0187, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.1017, SSIM=-0.0229, NCC=-0.0300, LMSE=+0.0023
+[eval] selection score (mean relative PSNR/SSIM): -0.052823
+
+Epoch: 57
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m22s | IPixel: 0
+.0219 | VGG: saving the latest model at the end of epoch 58, iters 448456
+Time Taken: 563 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_58_end (epoch 58, iter 448456)
+ [================================================================>]  Step: 70ms |  100/100 8ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.7504, SSIM=0.8770, NCC=0.9324, LMSE=0.0081 | vs baseline: dPS
+NR=-8.1296, dSSIM=-0.0637, dNCC=-0.0484, dLMSE=+0.0033
+ [=============================================================>...]  Step: 241ms |  20/20 326ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.5394, SSIM=0.8201, NCC=0.8934, LMSE=0.0194 | vs baseline: dPSNR=-0.01
+06, dSSIM=-0.0084, dNCC=+0.0057, dLMSE=-0.0007
+ [================================================================>]  Step: 293ms | T 200/200 4ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7823, SSIM=0.8983, NCC=0.9828, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+677, dSSIM=+0.0003, dNCC=+0.0011, dLMSE=+0.0002
+ [================================================================>]  Step: 297ms |  179/179 8ms | LMSE:
+0.0180 | NCC:[eval] postcard: PSNR=19.3161, SSIM=0.8076, NCC=0.8201, LMSE=0.0180 | vs baseline: dPSNR=-2.
+7539, dSSIM=-0.0697, dNCC=-0.1262, dLMSE=+0.0136
+ [================================================================>]  Step: 294ms | T 101/101 2ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.2469, SSIM=0.9090, NCC=0.9542, LMSE=0.0045 | vs baseline: dPSNR=+0.0669
+, dSSIM=+0.0230, dNCC=+0.0183, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.1790, SSIM=-0.0237, NCC=-0.0299, LMSE=+0.0025
+[eval] selection score (mean relative PSNR/SSIM): -0.054789
+
+Epoch: 58
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m14s | IPixel: 0
+.0221 | VGG: saving the latest model at the end of epoch 59, iters 456188
+Time Taken: 555 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_59_end (epoch 59, iter 456188)
+ [================================================================>]  Step: 70ms | 100/100 8ms | LMSE: 0.
+0082 | NCC: 0[eval] ceilnet_table2: PSNR=19.8899, SSIM=0.8781, NCC=0.9327, LMSE=0.0082 | vs baseline: dPS
+NR=-7.9901, dSSIM=-0.0626, dNCC=-0.0481, dLMSE=+0.0034
+ [=============================================================>...]  Step: 240ms |  20/20 328ms | LMSE:
+0.0200 | NCC:[eval] real20: PSNR=23.2667, SSIM=0.8173, NCC=0.8901, LMSE=0.0200 | vs baseline: dPSNR=-0.28
+33, dSSIM=-0.0112, dNCC=+0.0024, dLMSE=-0.0001
+ [================================================================>]  Step: 295ms | T 200/200 7ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.5388, SSIM=0.8955, NCC=0.9829, LMSE=0.0032 | vs baseline: dPSNR=-0.3
+112, dSSIM=-0.0025, dNCC=+0.0012, dLMSE=+0.0003
+ [================================================================>]  Step: 300ms |  179/179 6ms | LMSE:
+0.0177 | NCC:[eval] postcard: PSNR=19.0939, SSIM=0.8042, NCC=0.8135, LMSE=0.0177 | vs baseline: dPSNR=-2.
+9761, dSSIM=-0.0731, dNCC=-0.1328, dLMSE=+0.0133
+ [================================================================>]  Step: 293ms | T 101/101 3ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.2253, SSIM=0.9097, NCC=0.9549, LMSE=0.0045 | vs baseline: dPSNR=+0.0453
+, dSSIM=+0.0237, dNCC=+0.0190, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.3031, SSIM=-0.0251, NCC=-0.0317, LMSE=+0.0026
+[eval] selection score (mean relative PSNR/SSIM): -0.058364
+
+Epoch: 59
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m16s | IPixel: 0
+.0220 | VGG: saving the model at epoch 60, iters 463920
+saving the latest model at the end of epoch 60, iters 463920
+Time Taken: 557 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_60_end (epoch 60, iter 463920)
+ [================================================================>]  Step: 70ms |  100/100 4ms | LMSE: 0
+.0079 | NCC: [eval] ceilnet_table2: PSNR=19.7270, SSIM=0.8770, NCC=0.9320, LMSE=0.0079 | vs baseline: dPS
+NR=-8.1530, dSSIM=-0.0637, dNCC=-0.0488, dLMSE=+0.0031
+ [=============================================================>...]  Step: 239ms |  20/20 289ms | LMSE:
+0.0195 | NCC:[eval] real20: PSNR=23.5474, SSIM=0.8211, NCC=0.8935, LMSE=0.0195 | vs baseline: dPSNR=-0.00
+26, dSSIM=-0.0074, dNCC=+0.0058, dLMSE=-0.0006
+ [================================================================>]  Step: 296ms | T 200/200 1ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7470, SSIM=0.8982, NCC=0.9833, LMSE=0.0031 | vs baseline: dPSNR=-0.1
+030, dSSIM=+0.0002, dNCC=+0.0016, dLMSE=+0.0002
+ [================================================================>]  Step: 294ms | T 179/179 8ms | LMSE:
+ 0.0169 | NCC[eval] postcard: PSNR=19.5044, SSIM=0.8120, NCC=0.8257, LMSE=0.0169 | vs baseline: dPSNR=-2.
+5656, dSSIM=-0.0653, dNCC=-0.1206, dLMSE=+0.0125
+ [================================================================>]  Step: 294ms | T 101/101 8ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.3598, SSIM=0.9097, NCC=0.9540, LMSE=0.0045 | vs baseline: dPSNR=+0.1798
+, dSSIM=+0.0237, dNCC=+0.0181, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.1289, SSIM=-0.0225, NCC=-0.0288, LMSE=+0.0023
+[eval] selection score (mean relative PSNR/SSIM): -0.052987
+
+Epoch: 60
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0219 | VGG: saving the latest model at the end of epoch 61, iters 471652
+Time Taken: 560 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_61_end (epoch 61, iter 471652)
+ [================================================================>]  Step: 70ms |  100/100 8ms | LMSE: 0
+.0084 | NCC: [eval] ceilnet_table2: PSNR=19.8807, SSIM=0.8776, NCC=0.9323, LMSE=0.0084 | vs baseline: dPS
+NR=-7.9993, dSSIM=-0.0631, dNCC=-0.0485, dLMSE=+0.0036
+ [=============================================================>...]  Step: 238ms |  20/20 304ms | LMSE:
+0.0193 | NCC:[eval] real20: PSNR=23.4215, SSIM=0.8202, NCC=0.8885, LMSE=0.0193 | vs baseline: dPSNR=-0.12
+85, dSSIM=-0.0083, dNCC=+0.0008, dLMSE=-0.0008
+ [================================================================>]  Step: 292ms |  200/200 4ms | LMSE:
+0.0031 | NCC:[eval] objects: PSNR=24.8316, SSIM=0.8984, NCC=0.9838, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+184, dSSIM=+0.0004, dNCC=+0.0021, dLMSE=+0.0002
+ [================================================================>]  Step: 295ms | T 179/179 2ms | LMSE:
+ 0.0144 | NCC[eval] postcard: PSNR=19.9591, SSIM=0.8271, NCC=0.8497, LMSE=0.0144 | vs baseline: dPSNR=-2.
+1109, dSSIM=-0.0502, dNCC=-0.0966, dLMSE=+0.0100
+ [================================================================>]  Step: 296ms | T 101/101 8ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.3533, SSIM=0.9087, NCC=0.9525, LMSE=0.0045 | vs baseline: dPSNR=+0.1733
+, dSSIM=+0.0227, dNCC=+0.0166, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.0168, SSIM=-0.0197, NCC=-0.0251, LMSE=+0.0018
+[eval] selection score (mean relative PSNR/SSIM): -0.049011
+
+Epoch: 61
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m17s | IPixel: 0
+.0218 | VGG: saving the latest model at the end of epoch 62, iters 479384
+Time Taken: 558 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_62_end (epoch 62, iter 479384)
+ [================================================================>]  Step: 70ms |  100/100 5ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.8156, SSIM=0.8772, NCC=0.9318, LMSE=0.0081 | vs baseline: dPS
+NR=-8.0644, dSSIM=-0.0635, dNCC=-0.0490, dLMSE=+0.0033
+ [=============================================================>...]  Step: 239ms |  20/20 540ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.5599, SSIM=0.8224, NCC=0.8939, LMSE=0.0194 | vs baseline: dPSNR=+0.00
+99, dSSIM=-0.0061, dNCC=+0.0062, dLMSE=-0.0007
+ [================================================================>]  Step: 297ms | T 200/200 9ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.7866, SSIM=0.8976, NCC=0.9833, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+634, dSSIM=-0.0004, dNCC=+0.0016, dLMSE=+0.0002
+ [================================================================>]  Step: 292ms | T 179/179 3ms | LMSE:
+ 0.0173 | NCC[eval] postcard: PSNR=19.3043, SSIM=0.8079, NCC=0.8208, LMSE=0.0173 | vs baseline: dPSNR=-2.
+7657, dSSIM=-0.0694, dNCC=-0.1255, dLMSE=+0.0129
+ [================================================================>]  Step: 293ms | T 101/101 7ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.4533, SSIM=0.9114, NCC=0.9553, LMSE=0.0044 | vs baseline: dPSNR=+0.2733
+, dSSIM=+0.0254, dNCC=+0.0194, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-2.1221, SSIM=-0.0228, NCC=-0.0295, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.053152
+
+Epoch: 62
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m12s | IPixel: 0
+.0221 | VGG: saving the latest model at the end of epoch 63, iters 487116
+Time Taken: 553 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_63_end (epoch 63, iter 487116)
+ [================================================================>]  Step: 70ms |  100/100 4ms | LMSE: 0
+.0080 | NCC: [eval] ceilnet_table2: PSNR=19.8454, SSIM=0.8769, NCC=0.9325, LMSE=0.0080 | vs baseline: dPS
+NR=-8.0346, dSSIM=-0.0638, dNCC=-0.0483, dLMSE=+0.0032
+ [=============================================================>...]  Step: 240ms |  20/20 333ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.3232, SSIM=0.8190, NCC=0.8925, LMSE=0.0194 | vs baseline: dPSNR=-0.22
+68, dSSIM=-0.0095, dNCC=+0.0048, dLMSE=-0.0007
+ [================================================================>]  Step: 299ms |  200/200 4ms | LMSE:
+0.0031 | NCC:[eval] objects: PSNR=24.7546, SSIM=0.8972, NCC=0.9833, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+954, dSSIM=-0.0008, dNCC=+0.0016, dLMSE=+0.0002
+ [================================================================>]  Step: 296ms | T 179/179 7ms | LMSE:
+ 0.0154 | NCC[eval] postcard: PSNR=19.4997, SSIM=0.8150, NCC=0.8290, LMSE=0.0154 | vs baseline: dPSNR=-2.
+5703, dSSIM=-0.0623, dNCC=-0.1173, dLMSE=+0.0110
+ [================================================================>]  Step: 302ms |  101/101 5ms | LMSE:
+0.0046 | NCC:[eval] wild: PSNR=25.3371, SSIM=0.9088, NCC=0.9519, LMSE=0.0046 | vs baseline: dPSNR=+0.1571
+, dSSIM=+0.0228, dNCC=+0.0160, dLMSE=-0.0037
+[eval] mean metric deltas: PSNR=-2.1540, SSIM=-0.0227, NCC=-0.0286, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.053736
+
+Epoch: 63
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m11s | IPixel: 0
+.0216 | VGG: saving the latest model at the end of epoch 64, iters 494848
+Time Taken: 552 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_64_end (epoch 64, iter 494848)
+ [================================================================>]  Step: 71ms |  100/100 5ms | LMSE: 0
+.0079 | NCC: [eval] ceilnet_table2: PSNR=19.7792, SSIM=0.8778, NCC=0.9317, LMSE=0.0079 | vs baseline: dPS
+NR=-8.1008, dSSIM=-0.0629, dNCC=-0.0491, dLMSE=+0.0031
+ [=============================================================>...]  Step: 238ms |  20/20 311ms | LMSE:
+0.0199 | NCC:[eval] real20: PSNR=23.5049, SSIM=0.8184, NCC=0.8912, LMSE=0.0199 | vs baseline: dPSNR=-0.04
+51, dSSIM=-0.0101, dNCC=+0.0035, dLMSE=-0.0002
+ [================================================================>]  Step: 295ms | T 200/200 7ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.5697, SSIM=0.8948, NCC=0.9831, LMSE=0.0032 | vs baseline: dPSNR=-0.2
+803, dSSIM=-0.0032, dNCC=+0.0014, dLMSE=+0.0003
+ [================================================================>]  Step: 394ms | T 179/179 9ms | LMSE:
+ 0.0167 | NCC[eval] postcard: PSNR=19.2915, SSIM=0.8093, NCC=0.8168, LMSE=0.0167 | vs baseline: dPSNR=-2.
+7785, dSSIM=-0.0680, dNCC=-0.1295, dLMSE=+0.0123
+ [================================================================>]  Step: 296ms | T 101/101 9ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.3312, SSIM=0.9090, NCC=0.9530, LMSE=0.0045 | vs baseline: dPSNR=+0.1512
+, dSSIM=+0.0230, dNCC=+0.0171, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.2107, SSIM=-0.0242, NCC=-0.0313, LMSE=+0.0024
+[eval] selection score (mean relative PSNR/SSIM): -0.055771
+
+Epoch: 64
+ [================================================== 7732/7732 ===>]  Step: 65ms | Tot: 9m17s | IPixel: 0
+.0218 | VGG: saving the latest model at the end of epoch 65, iters 502580
+Time Taken: 557 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_65_end (epoch 65, iter 502580)
+ [================================================================>]  Step: 70ms |  100/100 5ms | LMSE: 0
+.0080 | NCC: [eval] ceilnet_table2: PSNR=19.7542, SSIM=0.8782, NCC=0.9332, LMSE=0.0080 | vs baseline: dPS
+NR=-8.1258, dSSIM=-0.0625, dNCC=-0.0476, dLMSE=+0.0032
+ [=============================================================>...]  Step: 238ms |  20/20 365ms | LMSE:
+0.0194 | NCC:[eval] real20: PSNR=23.4901, SSIM=0.8221, NCC=0.8918, LMSE=0.0194 | vs baseline: dPSNR=-0.05
+99, dSSIM=-0.0064, dNCC=+0.0041, dLMSE=-0.0007
+ [================================================================>]  Step: 295ms | T 200/200 0ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.8473, SSIM=0.8992, NCC=0.9835, LMSE=0.0031 | vs baseline: dPSNR=-0.0
+027, dSSIM=+0.0012, dNCC=+0.0018, dLMSE=+0.0002
+ [================================================================>]  Step: 292ms | T 179/179 9ms | LMSE:
+ 0.0160 | NCC[eval] postcard: PSNR=19.4678, SSIM=0.8169, NCC=0.8238, LMSE=0.0160 | vs baseline: dPSNR=-2.
+6022, dSSIM=-0.0604, dNCC=-0.1225, dLMSE=+0.0116
+ [================================================================>]  Step: 293ms | T 101/101 5ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.4177, SSIM=0.9097, NCC=0.9538, LMSE=0.0045 | vs baseline: dPSNR=+0.2377
+, dSSIM=+0.0237, dNCC=+0.0179, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.1106, SSIM=-0.0209, NCC=-0.0293, LMSE=+0.0021
+[eval] selection score (mean relative PSNR/SSIM): -0.051738
+
+Epoch: 65
+ [================================================== 7732/7732 ===>]  Step: 64ms | Tot: 9m14s | IPixel: 0
+.0217 | VGG: saving the latest model at the end of epoch 66, iters 510312
+Time Taken: 555 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_66_end (epoch 66, iter 510312)
+ [================================================================>]  Step: 71ms |  100/100 4ms | LMSE: 0
+.0079 | NCC: [eval] ceilnet_table2: PSNR=19.6778, SSIM=0.8754, NCC=0.9318, LMSE=0.0079 | vs baseline: dPS
+NR=-8.2022, dSSIM=-0.0653, dNCC=-0.0490, dLMSE=+0.0031
+ [=============================================================>...]  Step: 239ms |  20/20 565ms | LMSE:
+0.0190 | NCC:[eval] real20: PSNR=23.4585, SSIM=0.8217, NCC=0.8941, LMSE=0.0190 | vs baseline: dPSNR=-0.09
+15, dSSIM=-0.0068, dNCC=+0.0064, dLMSE=-0.0011
+ [================================================================>]  Step: 294ms | T 200/200 9ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.5581, SSIM=0.8947, NCC=0.9832, LMSE=0.0032 | vs baseline: dPSNR=-0.2
+919, dSSIM=-0.0033, dNCC=+0.0015, dLMSE=+0.0003
+ [================================================================>]  Step: 294ms | T 179/179 0ms | LMSE:
+ 0.0159 | NCC[eval] postcard: PSNR=19.5226, SSIM=0.8166, NCC=0.8248, LMSE=0.0159 | vs baseline: dPSNR=-2.
+5474, dSSIM=-0.0607, dNCC=-0.1215, dLMSE=+0.0115
+ [================================================================>]  Step: 295ms |  101/101 0ms | LMSE:
+0.0043 | NCC:[eval] wild: PSNR=25.4336, SSIM=0.9116, NCC=0.9555, LMSE=0.0043 | vs baseline: dPSNR=+0.2536
+, dSSIM=+0.0256, dNCC=+0.0196, dLMSE=-0.0040
+[eval] mean metric deltas: PSNR=-2.1759, SSIM=-0.0221, NCC=-0.0286, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.053677
+
+Epoch: 66
+ [================================================== 7732/7732 ===>]  Step: 66ms | Tot: 9m19s | IPixel: 0
+.0216 | VGG: saving the latest model at the end of epoch 67, iters 518044
+Time Taken: 560 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_67_end (epoch 67, iter 518044)
+ [================================================================>]  Step: 71ms |  100/100 8ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.7790, SSIM=0.8775, NCC=0.9323, LMSE=0.0081 | vs baseline: dPS
+NR=-8.1010, dSSIM=-0.0632, dNCC=-0.0485, dLMSE=+0.0033
+ [=============================================================>...]  Step: 243ms |  20/20 551ms | LMSE:
+0.0195 | NCC:[eval] real20: PSNR=23.4662, SSIM=0.8210, NCC=0.8927, LMSE=0.0195 | vs baseline: dPSNR=-0.08
+38, dSSIM=-0.0075, dNCC=+0.0050, dLMSE=-0.0006
+ [================================================================>]  Step: 294ms | T 200/200 6ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.5753, SSIM=0.8961, NCC=0.9828, LMSE=0.0032 | vs baseline: dPSNR=-0.2
+747, dSSIM=-0.0019, dNCC=+0.0011, dLMSE=+0.0003
+ [================================================================>]  Step: 292ms | T 179/179 2ms | LMSE:
+ 0.0154 | NCC[eval] postcard: PSNR=19.6437, SSIM=0.8193, NCC=0.8301, LMSE=0.0154 | vs baseline: dPSNR=-2.
+4263, dSSIM=-0.0580, dNCC=-0.1162, dLMSE=+0.0110
+ [================================================================>]  Step: 292ms | T 101/101 8ms | LMSE:
+ 0.0045 | NCC[eval] wild: PSNR=25.2620, SSIM=0.9093, NCC=0.9535, LMSE=0.0045 | vs baseline: dPSNR=+0.0820
+, dSSIM=+0.0233, dNCC=+0.0177, dLMSE=-0.0038
+[eval] mean metric deltas: PSNR=-2.1608, SSIM=-0.0215, NCC=-0.0282, LMSE=+0.0020
+[eval] selection score (mean relative PSNR/SSIM): -0.052998
+
+Epoch: 67
+ [================================================= 7732/7732 ====>]  Step: 66ms | Tot: 9m8s | IPixel: 0.
+0218 | VGG: 1saving the latest model at the end of epoch 68, iters 525776
+Time Taken: 549 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_68_end (epoch 68, iter 525776)
+ [================================================================>]  Step: 71ms |  100/100 4ms | LMSE: 0
+.0080 | NCC: [eval] ceilnet_table2: PSNR=19.7835, SSIM=0.8774, NCC=0.9324, LMSE=0.0080 | vs baseline: dPS
+NR=-8.0965, dSSIM=-0.0633, dNCC=-0.0484, dLMSE=+0.0032
+ [=============================================================>...]  Step: 243ms |  20/20 280ms | LMSE:
+0.0195 | NCC:[eval] real20: PSNR=23.4205, SSIM=0.8198, NCC=0.8901, LMSE=0.0195 | vs baseline: dPSNR=-0.12
+95, dSSIM=-0.0087, dNCC=+0.0024, dLMSE=-0.0006
+ [================================================================>]  Step: 293ms | T 200/200 7ms | LMSE:
+ 0.0031 | NCC[eval] objects: PSNR=24.6549, SSIM=0.8972, NCC=0.9835, LMSE=0.0031 | vs baseline: dPSNR=-0.1
+951, dSSIM=-0.0008, dNCC=+0.0018, dLMSE=+0.0002
+ [================================================================>]  Step: 295ms | 179/179 4ms | LMSE: 0
+.0166 | NCC: [eval] postcard: PSNR=19.4311, SSIM=0.8140, NCC=0.8221, LMSE=0.0166 | vs baseline: dPSNR=-2.
+6389, dSSIM=-0.0633, dNCC=-0.1242, dLMSE=+0.0122
+ [================================================================>]  Step: 294ms | T 101/101 3ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.4500, SSIM=0.9118, NCC=0.9561, LMSE=0.0044 | vs baseline: dPSNR=+0.2700
+, dSSIM=+0.0258, dNCC=+0.0202, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-2.1580, SSIM=-0.0221, NCC=-0.0296, LMSE=+0.0022
+[eval] selection score (mean relative PSNR/SSIM): -0.053432
+
+Epoch: 68
+ [================================================== 7732/7732 ===>]  Step: 62ms | Tot: 9m16s | IPixel: 0
+.0216 | VGG: saving the latest model at the end of epoch 69, iters 533508
+Time Taken: 557 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_69_end (epoch 69, iter 533508)
+ [================================================================>]  Step: 70ms |  100/100 2ms | LMSE: 0
+.0081 | NCC: [eval] ceilnet_table2: PSNR=19.7692, SSIM=0.8776, NCC=0.9323, LMSE=0.0081 | vs baseline: dPS
+NR=-8.1108, dSSIM=-0.0631, dNCC=-0.0485, dLMSE=+0.0033
+ [=============================================================>...]  Step: 238ms |  20/20 285ms | LMSE:
+0.0199 | NCC:[eval] real20: PSNR=23.4746, SSIM=0.8196, NCC=0.8893, LMSE=0.0199 | vs baseline: dPSNR=-0.07
+54, dSSIM=-0.0089, dNCC=+0.0016, dLMSE=-0.0002
+ [================================================================>]  Step: 293ms |  200/200 3ms | LMSE:
+0.0032 | NCC:[eval] objects: PSNR=24.6850, SSIM=0.8969, NCC=0.9828, LMSE=0.0032 | vs baseline: dPSNR=-0.1
+650, dSSIM=-0.0011, dNCC=+0.0011, dLMSE=+0.0003
+ [================================================================>]  Step: 293ms | T 179/179 5ms | LMSE:
+ 0.0186 | NCC[eval] postcard: PSNR=19.0528, SSIM=0.8018, NCC=0.8130, LMSE=0.0186 | vs baseline: dPSNR=-3.
+0172, dSSIM=-0.0755, dNCC=-0.1333, dLMSE=+0.0142
+ [================================================================>]  Step: 292ms | T 101/101 6ms | LMSE:
+ 0.0044 | NCC[eval] wild: PSNR=25.4730, SSIM=0.9103, NCC=0.9543, LMSE=0.0044 | vs baseline: dPSNR=+0.2930
+, dSSIM=+0.0243, dNCC=+0.0184, dLMSE=-0.0039
+[eval] mean metric deltas: PSNR=-2.2151, SSIM=-0.0249, NCC=-0.0321, LMSE=+0.0027
+[eval] selection score (mean relative PSNR/SSIM): -0.056360
+
+Epoch: 69
+ [================================================= 7732/7732 ====>]  Step: 66ms | Tot: 9m4s | IPixel: 0.
+0216 | VGG: 1saving the model at epoch 70, iters 541240
+saving the latest model at the end of epoch 70, iters 541240
+Time Taken: 545 sec
+Reset Dataset...
+
+[i] full evaluation at epoch_70_end (epoch 70, iter 541240)
+ [================================================================>]  Step: 70ms |  100/100 2ms | LMSE: 0
+.0078 | NCC: [eval] ceilnet_table2: PSNR=19.7794, SSIM=0.8787, NCC=0.9326, LMSE=0.0078 | vs baseline: dPS
+NR=-8.1006, dSSIM=-0.0620, dNCC=-0.0482, dLMSE=+0.0030
+ [=============================================================>...]  Step: 238ms |  20/20 313ms | LMSE:
+0.0198 | NCC:[eval] real20: PSNR=23.4829, SSIM=0.8203, NCC=0.8891, LMSE=0.0198 | vs baseline: dPSNR=-0.06
+71, dSSIM=-0.0082, dNCC=+0.0014, dLMSE=-0.0003
+ [================================================================>]  Step: 295ms | T 200/200 2ms | LMSE:
+ 0.0032 | NCC[eval] objects: PSNR=24.5938, SSIM=0.8958, NCC=0.9830, LMSE=0.0032 | vs baseline: dPSNR=-0.2
+562, dSSIM=-0.0022, dNCC=+0.0013, dLMSE=+0.0003
+ [================================================================>]  Step: 296ms | T 179/179 0ms | LMSE:
+ 0.0196 | NCC[eval] postcard: PSNR=18.9947, SSIM=0.8015, NCC=0.8072, LMSE=0.0196 | vs baseline: dPSNR=-3.
+0753, dSSIM=-0.0758, dNCC=-0.1391, dLMSE=+0.0152
+ [================================================================>]  Step: 295ms | T 101/101 1ms | LMSE:
+ 0.0046 | NCC[eval] wild: PSNR=25.3424, SSIM=0.9081, NCC=0.9519, LMSE=0.0046 | vs baseline: dPSNR=+0.1624
+, dSSIM=+0.0221, dNCC=+0.0160, dLMSE=-0.0037
+[eval] mean metric deltas: PSNR=-2.2674, SSIM=-0.0252, NCC=-0.0337, LMSE=+0.0029
+[eval] selection score (mean relative PSNR/SSIM): -0.057626
+root@bitahub-a19991981350187008354918:~/ERRNet# python3 train_errnet.py --name errnet_aug_struct_ft --hyp
+er -r --icnn_path checkpoints/errnet/errnet_060_00463920.pt --lr 5e-5 --nEpochs 75 --lambda_gan 0
+

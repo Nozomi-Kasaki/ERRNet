@@ -1,8 +1,11 @@
 .vscode
 *.pyc
 *.pth
+*.pt
 __pycache__
-checkpoints
+checkpoints/*/logs/
+checkpoints/*/web/
+checkpoints/errnet/
 result
 runs
 .ssh*
