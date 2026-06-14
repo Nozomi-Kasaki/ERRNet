@@ -38,4 +38,5 @@ Negative `dLMSE` is better.
 - The best practical recipe is baseline checkpoint initialization, OpenRR-5k paired data, identity clean samples, and conservative MSE-dominant loss.
 - Fully from-scratch larger architectures did not beat the baseline under the current data and training setup.
 - The synced `loss_log.txt` files contain headers only, so the plot script falls back to benchmark evaluation trends. Future runs should log per-iteration `IPixel` and `VGG` loss values if true training-loss curves are needed.
-
+- The `errnet_aug_struct_ft` and `errnet_aug_struct_ft_old_composite_score` runs did not preserve `tmux_eval_log.txt`, but their TensorBoard scalar event files were recovered from the training machine and exported under `analysis_outputs/tensorboard_scalars/`.
+- Qualitative examples comparing the official baseline and our best model are saved under `analysis_outputs/visual_example_search/`. The full raw inference outputs are intentionally omitted because they are large and reproducible from the saved script.
